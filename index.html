@@ -1888,19 +1888,21 @@ function breakCombo(){
  combo=0;comboT=0;ui.combo.classList.remove('on');
 }
 function onOvertake(t){
+ // gap = clearance beyond car bodies; a car more than ~1 lane away wasn't really "overtaken"
+ const gap=Math.abs(t.x-player.x)-(t.w+player.wid)/2;
+ if(gap>3.4)return; // too far to the side (different lane) — not a genuine overtake, no reward
  overtakes++;combo=Math.min(combo+1,9);comboT=4;
  score+=40;
  if(combo>=2){ui.combo.textContent='СЕРИЯ ×'+combo+' · ОЧКИ '+fmtMult(scoreMult());ui.combo.classList.add('on');}
  if(combo===3)popup('ЛИХАЧ!','hot');
  if(combo===5)popup('БЕЗУМЕЦ!','hot');
  if(combo===8){popup('ЛЕГЕНДА ТРАССЫ!','hot');unlock('combo8');}
- const near=Math.abs(t.x-player.x)<(t.w+player.wid)/2+0.95;
- if(near&&t.type!=='police'){
+ const near=t.type!=='police'&&gap<0.4;
+ if(near){
   if(player.v>veh.vmax*0.65){
    score+=120;nitro=clamp(nitro+8,0,100);nearCount++;
    if(nearCount>=10)unlock('near10');
    popup('ВПРИТЫК! +120','hot');shake=Math.max(shake,0.22);blip(1250,0.09,'square',0.12);
-   timeScale=0.45;slowT=0.32;slowPunch=5;
    if(mode.id==='sunset'&&t.type!=='moto'&&Math.random()<0.6)horn();
   }else{
    score+=20;popup('впритык… +20');
@@ -2048,12 +2050,12 @@ function updateRun(dt){
   const dz=t.z-player.z;
   if(t.oncoming){
    if(!t.passed&&dz>3){
-    if(player.v>15){
+    const closePass=Math.abs(t.x-player.x)<(t.w+player.wid)/2+2.2;
+    if(closePass&&player.v>15){
      combo=Math.min(combo+1,9);comboT=4;
      score+=150;nitro=clamp(nitro+10,0,100);
      popup('ВСТРЕЧКА! +150','hot');
      shake=Math.max(shake,0.25);unlock('oncoming');
-     timeScale=0.5;slowT=0.3;slowPunch=6;
      blip(1400,0.1,'square',0.12);
      if(combo>=2){ui.combo.textContent='СЕРИЯ ×'+combo+' · ОЧКИ '+fmtMult(scoreMult());ui.combo.classList.add('on');}
     }
