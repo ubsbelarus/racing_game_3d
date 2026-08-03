@@ -115,6 +115,20 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 @keyframes chev{to{background-position:59px 0}}
 .lead{max-width:440px;color:var(--dim);font-size:15px;line-height:1.5}
 .meta{margin-top:14px;font-size:12px;color:var(--amber);letter-spacing:.14em;font-weight:700}
+.achBtn{font-family:var(--body);cursor:pointer;background:var(--panel);border:1px solid var(--line);padding:8px 14px;transition:.15s}
+.achBtn:hover{border-color:var(--amber);background:rgba(255,177,68,.12);transform:translateY(-1px)}
+.achPanel{max-width:min(560px,92vw);text-align:left}
+.achPanel h2{text-align:center}
+.achPanel .sub{text-align:center}
+.achList{margin-top:16px;max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding-right:4px}
+.achRow{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);padding:10px 14px}
+.achRow.done{border-color:rgba(90,220,190,.5);background:rgba(90,220,190,.08)}
+.achIco{width:34px;height:34px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;font-size:16px;
+  background:rgba(255,255,255,.08);border:1px solid var(--line)}
+.achRow.done .achIco{background:linear-gradient(180deg,#8fe0c8,#2ab894);border-color:transparent}
+.achInfo b{display:block;font-family:var(--disp);font-size:13px;letter-spacing:.03em}
+.achInfo span{display:block;font-size:11px;color:var(--dim);margin-top:2px}
+.achRow.done .achInfo b{color:#5adcbe}
 .curChip{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:var(--panel);border:1px solid var(--line);
   padding:8px 16px 8px 12px;clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%)}
 .curSign{width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#8fe0c8,#2ab894);color:#0c2620;
@@ -354,7 +368,7 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
       <div class="chevrons"></div>
       <p class="lead">Закатная трасса, встречка, мотоциклы, пикапы, фуры, автокраны и мигающие спецсигналы.
         Просачивайся между рядами, рискуй на встречной и держи серию — очки капают только за скорость и риск.</p>
-      <div class="meta" id="achLine">🏅 0/11</div>
+      <button class="meta achBtn" id="achLine" type="button">🏅 0/11</button>
       <div class="curChip"><div class="curSign">Б</div><div><div class="curLbl">Баланс</div><div class="curVal" id="curVal">0 Br</div></div></div>
     </div>
     <div class="modes">
@@ -466,6 +480,15 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
   </div>
 </div></div>
 
+<div class="ov" id="achOv"><div class="panel achPanel">
+  <h2>🏅 ДОСТИЖЕНИЯ</h2>
+  <p class="sub" id="achSub">0 / 11 открыто</p>
+  <div class="achList" id="achList"></div>
+  <div class="btnRow" style="margin-top:18px">
+    <button class="btn btn-ghost" id="btnAchClose">ЗАКРЫТЬ</button>
+  </div>
+</div></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 'use strict';
@@ -516,7 +539,7 @@ const SWATCHES={
 };
 const MODES=[
  {id:'sunset',fog:0x9c4a3c,fogFar:340,sun:true,mtn:0x3a2140,ground:0x251629,road:0xd8b0a4,
-  lanes:[-1.6,1.6,4.8,8.0],oncoming:[-8.0,-4.8],roadHalf:9.6,
+  lanes:[1.6,4.8,8.0],oncoming:[-1.6,-4.8,-8.0],roadHalf:9.6,
   hemi:[0x8a5a9a,0x2a1626,0.8],dir:[0xff9a52,1.3],
   sky:[[0,'#150b30'],[0.4,'#39194f'],[0.6,'#7c2c54'],[0.72,'#c4463c'],[0.8,'#ff7a38'],[0.88,'#ffb469'],[1,'#ffd9a0']]},
  {id:'rf',fog:0x69737f,fogFar:290,sun:false,mtn:0x3d454e,ground:0x24282d,road:0xa8b0b8,
@@ -1679,6 +1702,10 @@ let chasers=[];
 let spawnTimer=1,oncomingTimer=2,policeTimer=20,crossTimer=15,crossTimer2=40,potatoTimer=rand(20,35);
 function nearestLane(x){let bd=1e9,bx=mode.lanes[0];
  mode.lanes.forEach(l=>{const d=Math.abs(l-x);if(d<bd){bd=d;bx=l;}});return bx;}
+function oncomingBoundary(){
+ if(!mode.oncoming.length)return null;
+ return (Math.max(...mode.oncoming)+Math.min(...mode.lanes))/2;
+}
 function randomType(){
  if(mode.id!=='rf'){const r=Math.random();
   return r<0.36?'sedan':r<0.49?'taxi':r<0.58?'minibus':r<0.68?'moto':r<0.78?'pickup':
@@ -1690,14 +1717,15 @@ function spawnAt(laneX,z,forceType){
  const type=forceType||randomType();let m,v;
  const wildOk=(type==='sedan'||type==='taxi'||type==='pickup'||type==='minibus');
  const wild=wildOk&&Math.random()<clamp(0.05+chaosLvl*0.28,0.05,0.32);
- const WILD_COLOR=0x8a3020;
- if(type==='sedan'){m=buildSedan(wild?WILD_COLOR:pick(CAR_COLORS));v=rand(13,21);}
- else if(type==='taxi'){m=buildSedan(wild?WILD_COLOR:0xe0a33c,{taxi:!wild});v=rand(15,22);}
+ const WILD_COLORS=[0x8a3020,0x2c2c34,0x6a1f1f,0x4a3a1a];
+ const wildColor=()=>pick(WILD_COLORS);
+ if(type==='sedan'){m=buildSedan(wild?wildColor():pick(CAR_COLORS));v=rand(13,21);}
+ else if(type==='taxi'){m=buildSedan(wild?wildColor():0xe0a33c,{taxi:!wild});v=rand(15,22);}
  else if(type==='minibus'){m=buildMinibus();v=rand(14,20);}
  else if(type==='moto'){m=buildMoto();v=rand(18,25);}
  else if(type==='truck'){m=buildTruck(pick(TRUCK_COLORS));v=rand(12,16);}
  else if(type==='bus'){m=buildBus(pick(BUS_COLORS));v=rand(13,17);}
- else if(type==='pickup'){m=buildPickup(wild?WILD_COLOR:pick(PICKUP_COLORS));v=rand(15,21);}
+ else if(type==='pickup'){m=buildPickup(wild?wildColor():pick(PICKUP_COLORS));v=rand(15,21);}
  else if(type==='crane'){m=buildCraneTruck(pick(CRANE_COLORS));v=rand(9,12);}
  else if(type==='cart'){m=buildCart('cargo');v=rand(5,8);}
  else if(type==='cartPass'){m=buildCart('pass');v=rand(5,8);}
@@ -1984,18 +2012,47 @@ function saveRecord(){try{localStorage.setItem('pg_record',record);}catch(e){}}
 function saveDist(){try{localStorage.setItem('pg_dist',bestDist);}catch(e){}}
 
 /* ================= валюта / гараж: покупка и тюнинг ================= */
+/* владение и тюнинг хранятся по имени машины (mode::name), а не по индексу в массиве —
+   так прогресс не «слетает» и не путается между машинами, если ростер когда-нибудь поменяет порядок */
 let currency=0;try{currency=+localStorage.getItem('pg_cur')||0;}catch(e){}
 function saveCurrency(){try{localStorage.setItem('pg_cur',currency);}catch(e){}}
-function defaultOwned(){const o={};for(const k in RIDES)o[k]=RIDES[k].map(v=>v.price===0&&!v.unlockType);return o;}
+function vehKey(mid,i){const v=RIDES[mid][i];return mid+'::'+v.name;}
+function defaultOwned(){
+ const o={};
+ for(const k in RIDES)RIDES[k].forEach((v,i)=>{o[vehKey(k,i)]=(v.price===0&&!v.unlockType);});
+ return o;
+}
 let owned=defaultOwned();
-try{const sv=JSON.parse(localStorage.getItem('pg_owned'));if(sv)for(const k in owned)if(sv[k])owned[k]=owned[k].map((b,i)=>b||!!sv[k][i]);}catch(e){}
-function saveOwned(){try{localStorage.setItem('pg_owned',JSON.stringify(owned));}catch(e){}}
-function defaultTune(){const t={};for(const k in RIDES)t[k]=RIDES[k].map(()=>[0,0,0]);return t;}
+try{
+ const sv=JSON.parse(localStorage.getItem('pg_owned2'));
+ if(sv){
+  for(const key in sv){if(key in owned)owned[key]=owned[key]||!!sv[key];}
+ }else{
+  /* одноразовая миграция со старого формата (по индексу) */
+  const old=JSON.parse(localStorage.getItem('pg_owned'));
+  if(old)for(const k in RIDES)RIDES[k].forEach((v,i)=>{if(old[k]&&old[k][i])owned[vehKey(k,i)]=true;});
+ }
+}catch(e){}
+function saveOwned(){try{localStorage.setItem('pg_owned2',JSON.stringify(owned));}catch(e){}}
+function defaultTune(){
+ const t={};
+ for(const k in RIDES)RIDES[k].forEach((v,i)=>{t[vehKey(k,i)]=[0,0,0];});
+ return t;
+}
 let tune=defaultTune();
-try{const sv=JSON.parse(localStorage.getItem('pg_tune'));if(sv)for(const k in tune)if(sv[k])tune[k]=tune[k].map((row,i)=>sv[k][i]||row);}catch(e){}
-function saveTune(){try{localStorage.setItem('pg_tune',JSON.stringify(tune));}catch(e){}}
-function isOwned(mid,i){return !!(owned[mid]&&owned[mid][i]);}
-function tuneLv(mid,i){return (tune[mid]&&tune[mid][i])||[0,0,0];}
+try{
+ const sv=JSON.parse(localStorage.getItem('pg_tune2'));
+ if(sv){
+  for(const key in sv){if(key in tune)tune[key]=sv[key];}
+ }else{
+  const old=JSON.parse(localStorage.getItem('pg_tune'));
+  if(old)for(const k in RIDES)RIDES[k].forEach((v,i)=>{if(old[k]&&old[k][i])tune[vehKey(k,i)]=old[k][i];});
+ }
+}catch(e){}
+function saveTune(){try{localStorage.setItem('pg_tune2',JSON.stringify(tune));}catch(e){}}
+function isOwned(mid,i){return !!owned[vehKey(mid,i)];}
+/* всегда возвращает ЖИВУЮ ссылку на массив в tune — мутация lv[k]++ гарантированно сохранится */
+function tuneLv(mid,i){const key=vehKey(mid,i);if(!tune[key])tune[key]=[0,0,0];return tune[key];}
 function tunePrice(base,lvl){return Math.round((base||500)*0.22*(lvl+1));}
 function applyTuneToVeh(v,mid,i){
  const lv=tuneLv(mid,i);
@@ -2015,12 +2072,12 @@ function saveStats(){try{localStorage.setItem('pg_stats',JSON.stringify(stats));
 
 const MOPED_REQ={dist:10000,earned:200000};
 const QUESTS=[
- {id:'q_dist10',   desc:'Проехать 10 км суммарно',        get:()=>stats.dist,      target:10000, unit:'км', div:1000, xp:150, cur:500},
- {id:'q_over50',   desc:'50 обгонов суммарно',             get:()=>stats.overtakes, target:50,    unit:'',   div:1,    xp:150, cur:400},
- {id:'q_jump20',   desc:'20 прыжков с трамплина',          get:()=>stats.jumps,     target:20,    unit:'',   div:1,    xp:150, cur:400},
- {id:'q_drift15',  desc:'15 удачных дрифтов',              get:()=>stats.drifts,    target:15,    unit:'',   div:1,    xp:150, cur:400},
- {id:'q_races10',  desc:'10 заездов',                      get:()=>stats.races,     target:10,    unit:'',   div:1,    xp:150, cur:300},
- {id:'q_earn5000', desc:'Заработать 5000 Br суммарно',     get:()=>stats.earned,    target:5000,  unit:'Br', div:1,    xp:150, cur:300},
+ {id:'q_dist10',   desc:'Проехать 10 км суммарно',        get:()=>stats.dist,      target:10000, unit:'км', div:1000, xp:150, cur:300},
+ {id:'q_over50',   desc:'50 обгонов суммарно',             get:()=>stats.overtakes, target:50,    unit:'',   div:1,    xp:150, cur:240},
+ {id:'q_jump20',   desc:'20 прыжков с трамплина',          get:()=>stats.jumps,     target:20,    unit:'',   div:1,    xp:150, cur:240},
+ {id:'q_drift15',  desc:'15 удачных дрифтов',              get:()=>stats.drifts,    target:15,    unit:'',   div:1,    xp:150, cur:240},
+ {id:'q_races10',  desc:'10 заездов',                      get:()=>stats.races,     target:10,    unit:'',   div:1,    xp:150, cur:180},
+ {id:'q_earn5000', desc:'Заработать 5000 Br суммарно',     get:()=>stats.earned,    target:5000,  unit:'Br', div:1,    xp:150, cur:180},
 ];
 let questDone={};try{questDone=JSON.parse(localStorage.getItem('pg_quests'))||{};}catch(e){}
 function saveQuestDone(){try{localStorage.setItem('pg_quests',JSON.stringify(questDone));}catch(e){}}
@@ -2035,7 +2092,7 @@ function unlockMopedIfEligible(mid){
  const list=RIDES[mid];const idx=list.findIndex(v=>v.unlockType==='progress');
  if(idx<0||isOwned(mid,idx))return;
  if(stats.dist>=MOPED_REQ.dist&&stats.earned>=MOPED_REQ.earned){
-  owned[mid][idx]=true;saveOwned();
+  owned[vehKey(mid,idx)]=true;saveOwned();
   popup('🛵 МОПЕД ОТКРЫТ!','hot');blip(920,0.16,'square',0.12);
  }
 }
@@ -2043,7 +2100,7 @@ function unlockSeasonRewardIfEligible(mid){
  const list=RIDES[mid];const idx=list.findIndex(v=>v.unlockType==='season');
  if(idx<0||isOwned(mid,idx))return;
  if(seasonLevel()>=SEASON_MAX){
-  owned[mid][idx]=true;saveOwned();
+  owned[vehKey(mid,idx)]=true;saveOwned();
   popup('🏆 МОТОЦИКЛ СЕЗОННОГО ПРОПУСКА ОТКРЫТ!','hot');blip(1200,0.2,'square',0.14);
  }
 }
@@ -2070,7 +2127,7 @@ function progressAfterRace(sessionOvertakes,sessionJumps,sessionDrifts,raceDist,
  for(const mid in RIDES){unlockMopedIfEligible(mid);unlockSeasonRewardIfEligible(mid);}
  const newLevel=seasonLevel();
  if(newLevel>prevLevel){
-  const reward=newLevel*120;currency+=reward;saveCurrency();
+  const reward=newLevel*80;currency+=reward;saveCurrency();
   popup('⭐ УРОВЕНЬ ПРОПУСКА '+newLevel+' · +'+reward+' Br','hot');
  }
 }
@@ -2116,8 +2173,8 @@ function unlock(id){
  try{localStorage.setItem('pg_ach',JSON.stringify(ach));}catch(e){}
  const a=ACH.find(x=>x[0]===id);
  if(a){
-  currency+=80;seasonXP+=60;saveCurrency();saveSeasonXP();
-  toast('🏅 '+a[1],a[2]+' · +80 Br');
+  currency+=50;seasonXP+=45;saveCurrency();saveSeasonXP();
+  toast('🏅 '+a[1],a[2]+' · +50 Br');
   blip(784,0.1,'square',0.1);setTimeout(()=>blip(1175,0.14,'square',0.1),110);
  }
 }
@@ -2137,7 +2194,7 @@ function updateHUD(){
  ui.nitroWrap.classList.toggle('boost',boosting);
  const sl=clamp((player.v/veh.vmax-0.72)*2.2,0,0.8)+(boosting?0.3:0);
  ui.speedlines.style.opacity=(state===ST.RUN?clamp(sl,0,1):0);
- ui.onWarn.classList.toggle('on',state===ST.RUN&&mode.oncoming.length>0&&player.x<-3.2);
+ ui.onWarn.classList.toggle('on',state===ST.RUN&&mode.oncoming.length>0&&player.x<oncomingBoundary());
  const gn=player.v<1?'N':String(clamp(Math.ceil(player.v/(veh.vmax/5)),1,5));
  ui.gear.innerHTML='ПЕРЕДАЧА <b>'+gn+'</b>';
 }
@@ -2146,6 +2203,20 @@ function refreshMeta(){
  const n=Object.keys(ach).length;
  $('#achLine').textContent='🏅 '+n+'/'+ACH.length+' · ЛУЧШИЙ ЗАЕЗД '+bestDist.toFixed(1)+' КМ · РЕКОРД '+record;
 }
+function openAch(){
+ const n=Object.keys(ach).length;
+ $('#achSub').textContent=n+' / '+ACH.length+' открыто';
+ const list=$('#achList');list.innerHTML='';
+ ACH.forEach(([id,name,desc])=>{
+  const done=!!ach[id];
+  const row=document.createElement('div');row.className='achRow'+(done?' done':'');
+  row.innerHTML='<div class="achIco">'+(done?'🏅':'🔒')+'</div>'+
+   '<div class="achInfo"><b>'+name+'</b><span>'+desc+(done?' · получено +50 Br':'')+'</span></div>';
+  list.appendChild(row);
+ });
+ $('#achOv').classList.add('on');blip(760,0.08);
+}
+function closeAch(){$('#achOv').classList.remove('on');blip(560,0.06);}
 
 /* ================= preview ================= */
 const pvRenderer=new THREE.WebGLRenderer({canvas:$('#pv'),antialias:true,alpha:true});
@@ -2319,7 +2390,7 @@ function doCrash(t){
  soundCrash();
  finalScore=Math.floor(score);
  if(finalScore>record){record=finalScore;saveRecord();newRec=true;}else newRec=false;
- earnedCur=Math.round(finalScore*0.35+dist*0.02);
+ earnedCur=Math.round(finalScore*0.2+dist*0.01);
  currency+=earnedCur;saveCurrency();
  const xpGain=Math.round(finalScore*0.5+dist*0.03);
  progressAfterRace(overtakes,sessionJumps,sessionDrifts,dist,earnedCur,xpGain);
@@ -2352,24 +2423,25 @@ function breakCombo(){
 function onOvertake(t){
  // gap = clearance beyond car bodies; a car more than ~1 lane away wasn't really "overtaken"
  const gap=Math.abs(t.x-player.x)-(t.w+player.wid)/2;
- if(gap>3.4)return; // too far to the side (different lane) — not a genuine overtake, no reward
+ if(gap>2.6)return; // too far to the side (different lane) — not a genuine overtake, no reward
+ if(player.v-t.v<4)return; // wasn't actually going meaningfully faster — not a real overtake
  overtakes++;combo=Math.min(combo+1,9);comboT=4;
- score+=40;
+ score+=28;
  if(combo>=2){ui.combo.textContent='СЕРИЯ ×'+combo+' · ОЧКИ '+fmtMult(scoreMult());ui.combo.classList.add('on');}
  if(combo===3)popup('ЛИХАЧ!','hot');
  if(combo===5)popup('БЕЗУМЕЦ!','hot');
  if(combo===8){popup('ЛЕГЕНДА ТРАССЫ!','hot');unlock('combo8');}
- const near=t.type!=='police'&&gap<0.4;
+ const near=t.type!=='police'&&gap<0.32;
  if(near){
   if(player.v>veh.vmax*0.65){
-   score+=120;nitro=clamp(nitro+8,0,100);nearCount++;
+   score+=85;nitro=clamp(nitro+8,0,100);nearCount++;
    if(nearCount>=10)unlock('near10');
-   popup('ВПРИТЫК! +120','hot');shake=Math.max(shake,0.22);blip(1250,0.09,'square',0.12);
+   popup('ВПРИТЫК! +85','hot');shake=Math.max(shake,0.22);blip(1250,0.09,'square',0.12);
    if(mode.id==='sunset'&&t.type!=='moto'&&Math.random()<0.6)horn();
   }else{
-   score+=20;popup('впритык… +20');
+   score+=15;popup('впритык… +15');
   }
- }else{popup('ОБГОН +40');blip(920,0.07,'square',0.09);}
+ }else{popup(pick(['ОБГОН +28','ЕСТЬ ОБГОН! +28','МИМО! +28','УШЁЛ ВПЕРЁД +28']));blip(920,0.07,'square',0.09);}
 }
 function checkRamps(){
  if(player.y>0)return;
@@ -2458,8 +2530,8 @@ function updateRun(dt){
  if(km>lastKm){lastKm=km;popup(km+' КМ · ТАК ДЕРЖАТЬ');if(km>=3)unlock('km3');}
  if(player.drifting){
   driftTime+=dt;
-  const fatigue=1/(1+driftTime*0.55);
-  driftCharge=Math.min(40,driftCharge+(10+player.v*0.5)*fatigue*dt);
+  const fatigue=1/(1+driftTime*0.9);
+  driftCharge=Math.min(40,driftCharge+(5+player.v*0.28)*fatigue*dt);
   player.v=Math.max(0,player.v-player.v*0.18*dt);
   ui.drift.textContent='ДРИФТ · ЗАРЯД +'+Math.floor(driftCharge)+'/40';
   ui.drift.classList.add('on');
@@ -2542,7 +2614,8 @@ function updateRun(dt){
   const dz=t.z-player.z;
   if(t.oncoming){
    if(!t.passed&&dz>3){
-    const closePass=Math.abs(t.x-player.x)<(t.w+player.wid)/2+2.2;
+    const onOncomingSide=player.x<oncomingBoundary();
+    const closePass=onOncomingSide&&Math.abs(t.x-player.x)<(t.w+player.wid)/2+0.9;
     if(closePass&&player.v>15){
      combo=Math.min(combo+1,9);comboT=4;
      score+=150;nitro=clamp(nitro+10,0,100);
@@ -2558,8 +2631,11 @@ function updateRun(dt){
   }
   const closeZ=Math.abs(dz)<(t.len+player.len)/2*0.72,closeX=Math.abs(t.x-player.x)<(t.w+player.wid)/2*0.76;
   if(grounded&&closeZ&&closeX){doCrash(t);break;}
-  if(!grounded&&closeZ&&closeX&&!airRoofBonus&&(t.type==='truck'||t.type==='bus'||t.type==='crane')){
-   airRoofBonus=true;score+=100;popup('НА КРЫШЕ! +100','hot');shake=Math.max(shake,0.2);blip(700,0.1,'sine',0.1);
+  const landable=t.type!=='chicken'&&t.type!=='cross'&&t.type!=='mare'&&t.type!=='potato';
+  if(!grounded&&closeZ&&closeX&&!airRoofBonus&&landable){
+   airRoofBonus=true;
+   const bonus=t.w>2.1?120:(t.w>1.4?90:70);
+   popup('НА КРЫШЕ! +'+bonus,'hot');score+=bonus;shake=Math.max(shake,0.2);blip(700,0.1,'sine',0.1);
   }
  }
  player.g.position.set(player.x,player.y,player.z);
@@ -2767,7 +2843,7 @@ $('#btnBuy').addEventListener('click',e=>{
  e.currentTarget.blur();
  const v=RIDES[mode.id][carIdx];
  if(v.unlockType||isOwned(mode.id,carIdx)||currency<v.price)return;
- currency-=v.price;owned[mode.id][carIdx]=true;
+ currency-=v.price;owned[vehKey(mode.id,carIdx)]=true;
  saveCurrency();saveOwned();
  refreshGarageEconomy();blip(920,0.1,'square',0.1);
 });
@@ -2811,6 +2887,8 @@ $('#btnPauseHud').addEventListener('click',e=>{e.currentTarget.blur();togglePaus
 $('#btnResume').addEventListener('click',e=>{e.currentTarget.blur();togglePause();});
 $('#btnGarage1').addEventListener('click',e=>{e.currentTarget.blur();toGarage();});
 $('#btnGarage2').addEventListener('click',e=>{e.currentTarget.blur();toGarage();});
+$('#achLine').addEventListener('click',e=>{e.currentTarget.blur();openAch();});
+$('#btnAchClose').addEventListener('click',e=>{e.currentTarget.blur();closeAch();});
 $('#btnRetry').addEventListener('click',e=>{
  e.currentTarget.blur();
  $('#crashOv').classList.remove('on');$('#crashFlash').classList.remove('on');
