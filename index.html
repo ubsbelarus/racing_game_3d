@@ -683,7 +683,7 @@ function roadCanvas(wPx,dashLanes,dividerAt){
    }}
  });
 }
-const roadTex6=roadCanvas(384,[64,192,256,320],128);
+const roadTexSunset=roadCanvas(384,[64,128,256,320],192);
 const roadTex4=roadCanvas(256,[64,128,192],0);
 
 const M={
@@ -1500,7 +1500,7 @@ const hillMat=new THREE.MeshLambertMaterial({color:0x2a1830});
 for(let i=0;i<6;i++){const m=new THREE.Mesh(new THREE.ConeGeometry(rand(40,80),rand(18,40),7),hillMat);
  m.position.set((Math.random()<0.5?-1:1)*rand(60,240),0,rand(-300,-210));rig.add(m);}
 
-const roadMat=new THREE.MeshStandardMaterial({map:roadTex6,roughness:0.95,metalness:0,color:0xd8b0a4});
+const roadMat=new THREE.MeshStandardMaterial({map:roadTexSunset,roughness:0.95,metalness:0,color:0xd8b0a4});
 const SEG_LEN=240,SEGS=8;let segments=[];
 function buildRoad(m){
  segments.forEach(s=>{scene.remove(s);s.geometry.dispose();});
@@ -1511,7 +1511,7 @@ function buildRoad(m){
   seg.rotation.x=-Math.PI/2;seg.receiveShadow=true;seg.position.z=SEG_LEN/2-i*SEG_LEN;
   scene.add(seg);segments.push(seg);
  }
- roadMat.map=m.id==='sunset'?roadTex6:roadTex4;
+ roadMat.map=m.id==='sunset'?roadTexSunset:roadTex4;
  roadMat.needsUpdate=true;
 }
 const groundMat=new THREE.MeshLambertMaterial({color:0x251629});
