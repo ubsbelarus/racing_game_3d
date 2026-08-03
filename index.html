@@ -199,6 +199,11 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .th-winter::after{content:'❄ ❄ ❄';position:absolute;top:8px;left:0;right:0;text-align:center;font-size:11px;
   color:rgba(255,255,255,.8);letter-spacing:6px;text-shadow:0 1px 2px rgba(0,0,0,.25)}
 .th-winter span{position:absolute;bottom:4%;left:50%;transform:translateX(-50%);font-size:30px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
+.th-mega{background:linear-gradient(#4c5057,#7d838c 55%,#a6acb2);position:relative}
+.th-mega::before{content:'';position:absolute;left:0;right:0;bottom:0;height:26%;background:#3c3f44;border-top:2px dashed #9aa0a6}
+.th-mega::after{content:'';position:absolute;left:8%;right:8%;bottom:26%;height:3px;
+  background:repeating-linear-gradient(90deg,#e6dcc6 0 10px,transparent 10px 20px)}
+.th-mega span{position:absolute;bottom:32%;left:50%;transform:translateX(-50%);font-size:26px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
 .mode h3{font-family:var(--disp);font-size:16px;font-weight:800;margin-bottom:4px}
 .mode p{font-size:13px;color:var(--dim);line-height:1.35;max-width:360px}
 .mode .rec{display:inline-block;margin-top:6px;font-size:10px;letter-spacing:.18em;color:var(--amber);font-weight:700}
@@ -395,6 +400,14 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
           <span class="rec">РЕКОРД: <b id="recC">0</b></span></div>
         <div class="go">ВЫБРАТЬ <i>▸</i></div>
       </div>
+      <div class="mode" data-mode="3">
+        <div class="thumb th-mega"><span>🛣️</span></div>
+        <div><h3>МЕГА-ТРАССА</h3>
+          <p>18 полос в оба конца, плотнейший траффик, встречка, блокпосты полиции и заграждения с редкими проёмами
+            под съезды. Никаких трамплинов и картошки — тут не до трюков. Три эксклюзивных суперкара.</p>
+          <span class="rec">РЕКОРД: <b id="recD">0</b></span></div>
+        <div class="go">ВЫБРАТЬ <i>▸</i></div>
+      </div>
     </div>
     <div class="seasonPanel" id="seasonPanel">
       <div class="seasonHead">
@@ -526,6 +539,11 @@ const RIDES={
   {name:'СНЕГОБУГГИ', color:0xd6dfe3, vmax:31, accel:16.5, steer:9.9, spd:2,acc:5,hnd:5, model:'snowbuggy', price:950},
   {name:'МОПЕД',      color:0xffb144, vmax:22, accel:18,   steer:11.5, spd:2,acc:5,hnd:5, moped:true, unlockType:'progress', price:0},
   {name:'МОТОЦИКЛ ПРОПУСКА', color:0x2ab8a8, vmax:46, accel:21, steer:10.8, spd:5,acc:5,hnd:5, moped:true, unlockType:'season', price:0},
+ ],
+ mega:[
+  {name:'БОЛИД',    color:0xd8232c, vmax:62, accel:27,   steer:12.5, spd:5,acc:5,hnd:5, model:'openwheeler', price:6000},
+  {name:'ГИПЕРКАР', color:0x1c2c44, vmax:65, accel:24,   steer:11.5, spd:5,acc:5,hnd:4, model:'hypercar', price:7500},
+  {name:'МАСЛКАР',  color:0x2c2c2c, vmax:58, accel:22,   steer:9.5,  spd:5,acc:4,hnd:4, model:'muscle', price:5000},
  ]
 };
 /* фиксируем базовые характеристики до применения тюнинга */
@@ -536,6 +554,7 @@ const SWATCHES={
  sunset:[0xd98a2b,0xc14b32,0x3e7f8c,0x9aa5b1,0x6b8f4e,0x2b2b33],
  rf:[0x8a5a34,0x3a2c24,0xb0a89e,0xd9b877,0x5f4a34,0xe8e0d4],
  winter:[0x5a6b4a,0x2d3a2f,0xb9c6cf,0x707a82,0x9aa9a0,0xffffff],
+ mega:[0xd8232c,0x1c2c44,0x2c2c2c,0xffb144,0x9aa5b1,0xffffff],
 };
 const MODES=[
  {id:'sunset',fog:0x9c4a3c,fogFar:340,sun:true,mtn:0x3a2140,ground:0x251629,road:0xd8b0a4,
@@ -550,6 +569,11 @@ const MODES=[
   lanes:[-4.8,-1.6,1.6,4.8],oncoming:[],roadHalf:6.4,
   hemi:[0xc7d6dd,0x707d82,0.95],dir:[0xdfeaf0,1.0],slippery:true,precip:'snow',
   sky:[[0,'#7c8a92'],[0.4,'#9aa8b0'],[0.68,'#c3d0d6'],[0.85,'#dde8ec'],[1,'#eef4f6']]},
+ {id:'mega',fog:0x7d838c,fogFar:400,sun:false,mtn:0x565b64,ground:0x2c2e33,road:0x53565c,
+  lanes:[1.6,4.8,8.0,11.2,14.4,17.6,20.8,24.0,27.2],
+  oncoming:[-1.6,-4.8,-8.0,-11.2,-14.4,-17.6,-20.8,-24.0,-27.2],roadHalf:28.8,
+  hemi:[0x9aa4ae,0x35383e,1.0],dir:[0xe8ecf0,1.1],dense:true,
+  sky:[[0,'#4c5057'],[0.4,'#666c74'],[0.68,'#868d95'],[0.85,'#a6acb2'],[1,'#c4c9ce']]},
 ];
 const CAR_COLORS=[0xc14b32,0x3e7f8c,0xd6d0c4,0x4a4f58,0x6b8f4e,0xb8863b,0x7a4f8f];
 const TRUCK_COLORS=[0x3e7f8c,0xc14b32,0x4a4f58,0xb8863b];
@@ -561,13 +585,15 @@ const BB_TEXTS={
  sunset:['ПОЛНЫЙ ГАЗ','ШИНОМОНТАЖ 24Ч','БАНЯ · ВЕНИКИ','ЛОМБАРД «У ДЯДИ»','АВТОСЕРВИС «КОПЕЙКА»','РЫБАЛКА ЗДЕСЬ','ПЕЛЬМЕНИ ОПТОМ','КВАС «ОКРОШКА»'],
  rf:['ШУРПА У АШОТА','ОВЁС ОПТОМ','КУМЫС ХОЛОДНЫЙ','ЧАЙХАНА «У КОБЫЛИЦЫ»','ЧАЙ · ПЛОВ · ЛЕПЁШКИ','СВЕЖИЙ КУМЫС ЗДЕСЬ','ЗАВАРИ ЧАЙКУ','КУЗНИЦА · ПОДКОВЫ'],
  winter:['ШИНОМОНТАЖ · ШИПОВКА','ГЛИНТВЕЙН ЗДЕСЬ','ПРОКАТ ЛЫЖ','БАНЯ · ВЕНИКИ','ГОРЯЧИЕ ПИРОЖКИ','ТРОС · БУКСИРОВКА','ЦЕПИ НА КОЛЁСА','АВТОСЕРВИС «МОРОЗ»'],
+ mega:['АЗС · 24 ПОЛОСЫ','ШИНОМОНТАЖ НА ТРАССЕ','ДО ГОРОДА 100 КМ','ПЕРЕСТРОЕНИЕ ЗАПРЕЩЕНО','КАМЕРА · ФОТОФИКСАЦИЯ','ЭВАКУАТОР 24Ч','ТЕХОСМОТР ЗДЕСЬ','ПРОБКИ ОНЛАЙН'],
 };
 function bbTexts(){return BB_TEXTS[mode.id]||BB_TEXTS.sunset;}
 const REASONS={sedan:'Лоб в лоб с легковушкой',taxi:'Такси подрезало — шашечки не помогли',
  truck:'Врезался в фуру. Фура даже не заметила',bus:'Автобус тебя не увидел. Он большой',
  minibus:'Маршрутка — страшная сила',moto:'Мотоциклист всё видел. И осуждает',
  pickup:'Пикап притормозил. Ты — нет',crane:'Автокран с башенной стрелой. Стрела победила',
- police:'Задержан при попытке уйти в дрифт',potato:'Наехал на картофелину. Второй хлеб не пощадил бампер'};
+ police:'Задержан при попытке уйти в дрифт',potato:'Наехал на картофелину. Второй хлеб не пощадил бампер',
+ barrier:'Влетел в блокпост. Конусы тоже не выжили'};
 const REASONS_HORSE={cart:'Повозка оказалась прочнее лошади',cartPass:'Врезался в пассажирскую повозку. Пассажиры недовольны',
  cartPolice:'Полицейская повозка. Протокол составлен',cartTea:'Чайная повозка. Самовар цел, гордость — нет',
  mare:'Столкнулся с кобылицей. Табун осуждает',
@@ -685,6 +711,8 @@ function roadCanvas(wPx,dashLanes,dividerAt){
 }
 const roadTexSunset=roadCanvas(384,[64,128,256,320],192);
 const roadTex4=roadCanvas(256,[64,128,192],0);
+const megaDashLanes=(()=>{const a=[];for(let i=1;i<=8;i++){a.push(576-64*i);a.push(576+64*i);}return a;})();
+const roadTexMega=roadCanvas(1152,megaDashLanes,576);
 
 const M={
  glass:new THREE.MeshStandardMaterial({color:0x141d2e,roughness:0.12,metalness:0.9}),
@@ -1130,6 +1158,85 @@ function buildMoto(){
  [-0.75,0.75].forEach(z=>{const w=makeWheel(0.314,0.09);w.position.set(0,0.36,z);g.add(w);wheels.push(w);});
  return {g,wheels,len:2.1,w:0.7,wr:0.28};
 }
+/* ================= эксклюзивные модели мега-трассы ================= */
+/* БОЛИД — открытый гоночный болид: обнажённые колёса, антикрыло на стойках, узкий нос */
+function buildOpenWheeler(colorHex){
+ const g=new THREE.Group(),tilt=new THREE.Group();g.add(tilt);
+ const cm=bodyMat(colorHex),parts=[];
+ const L=4.2,W=1.7;
+ P(parts,new THREE.ConeGeometry(0.26,1.15,10),cm,0,0.4,-L/2+0.05,Math.PI/2,0,0);
+ P(parts,roundedBoxGeo(0.86,0.4,2.0,0.1),cm,0,0.48,0.15);
+ P(parts,new THREE.SphereGeometry(0.26,10,8,0,Math.PI*2,0,Math.PI/2),bodyMat(0x161018),0,0.68,-0.05);
+ [-0.68,0.68].forEach(x=>P(parts,roundedBoxGeo(0.46,0.32,1.3,0.08),cm,x,0.44,0.2));
+ P(parts,roundedBoxGeo(0.66,0.38,1.0,0.08),cm,0,0.48,1.2);
+ mergeInto(tilt,parts,true);
+ const wingP=[];
+ P(wingP,new THREE.BoxGeometry(1.1,0.05,0.34),M.dark,0,0.96,L/2-0.1);
+ [-0.4,0.4].forEach(x=>P(wingP,new THREE.BoxGeometry(0.05,0.4,0.05),M.dark,x,0.76,L/2));
+ P(wingP,new THREE.BoxGeometry(1.3,0.04,0.3),M.dark,0,0.2,-L/2+0.15);
+ mergeInto(tilt,wingP,true);
+ const wheels=[],steers=[],wr=0.36;
+ [[-1.5,-0.85,1],[-1.5,0.85,1],[1.4,-0.85,0],[1.4,0.85,0]].forEach(([z,x,f])=>{
+  if(f){const st=new THREE.Group();st.position.set(x,wr,z);st.add(makeWheel(wr,0.22));g.add(st);wheels.push(st.children[0]);steers.push(st);}
+  else{const w=makeWheel(wr,0.26);w.position.set(x,wr,z);g.add(w);wheels.push(w);}});
+ const tailMat=M.tail.clone();tailMat.userData.unique=true;
+ return {g,tilt,wheels,steers,len:L+0.3,w:W+0.35,tailMat};
+}
+/* ГИПЕРКАР — низкий клиновидный суперкар: застеклённый купол, диффузор, антикрыло */
+function buildHypercar(colorHex){
+ const g=new THREE.Group(),tilt=new THREE.Group();g.add(tilt);
+ const cm=bodyMat(colorHex),parts=[];
+ const L=4.5,W=1.95;
+ const s=new THREE.Shape();
+ s.moveTo(-L/2+0.2,0);s.lineTo(L/2-0.15,0);
+ s.quadraticCurveTo(L/2,0,L/2,0.18);
+ s.lineTo(L/2-0.6,0.62);
+ s.quadraticCurveTo(L/2-0.9,0.72,L/2-1.3,0.7);
+ s.lineTo(-L/2+0.9,0.68);
+ s.quadraticCurveTo(-L/2+0.3,0.5,-L/2+0.05,0.2);
+ s.lineTo(-L/2,0.08);
+ s.quadraticCurveTo(-L/2,0,-L/2+0.2,0);
+ const bodyGeo=new THREE.ExtrudeGeometry(s,{depth:W-0.1,bevelEnabled:true,bevelThickness:0.05,bevelSize:0.05,bevelSegments:4,curveSegments:14});
+ bodyGeo.translate(0,0.22,-(W-0.1)/2);
+ P(parts,bodyGeo,cm,0,0,0,0,Math.PI/2,0);
+ P(parts,roundedBoxGeo(1.0,0.22,1.5,0.1),M.glass,0,0.72,-0.15);
+ [-1,1].forEach(sd=>P(parts,roundedBoxGeo(0.06,0.24,0.9,0.03),M.dark,sd*(W/2-0.02),0.4,0.6));
+ const tailMat=M.tail.clone();tailMat.userData.unique=true;
+ P(parts,roundedBoxGeo(W-0.3,0.1,0.08,0.03),tailMat,0,0.44,L/2-0.02);
+ [-0.5,0.5].forEach(x=>P(parts,roundedBoxGeo(0.24,0.1,0.07,0.03),M.head,x,0.34,-L/2+0.02));
+ mergeInto(tilt,parts,true);
+ const wp=[];
+ P(wp,new THREE.BoxGeometry(W-0.3,0.04,0.3),M.dark,0,0.86,L/2-0.35);
+ [-0.6,0.6].forEach(x=>P(wp,new THREE.BoxGeometry(0.04,0.28,0.04),M.dark,x,0.72,L/2-0.35));
+ mergeInto(tilt,wp,true);
+ const wheels=[],steers=[],wr=0.37;
+ [[-1.5,-0.86,1],[-1.5,0.86,1],[1.45,-0.86,0],[1.45,0.86,0]].forEach(([z,x,f])=>{
+  if(f){const st=new THREE.Group();st.position.set(x,wr*1.1,z);st.add(makeWheel(wr,0.16));g.add(st);wheels.push(st.children[0]);steers.push(st);}
+  else{const w=makeWheel(wr,0.16);w.position.set(x,wr*1.1,z);g.add(w);wheels.push(w);}});
+ return {g,tilt,wheels,steers,len:L+0.2,w:W+0.05,tailMat};
+}
+/* МАСЛКАР — широкий ретро-маслкар: капотный воздухозаборник, широкие задние крылья */
+function buildMuscle(colorHex){
+ const g=new THREE.Group(),tilt=new THREE.Group();g.add(tilt);
+ const cm=bodyMat(colorHex),parts=[];
+ const L=4.6,W=1.92;
+ P(parts,roundedBoxGeo(W,0.62,L,0.14),cm,0,0.5,0);
+ P(parts,roundedBoxGeo(W-0.3,0.38,1.7,0.1),cm,0,0.92,-0.3);
+ P(parts,roundedBoxGeo(0.32,0.14,0.7,0.05),bodyMat(0x1c1a1e),0,0.85,-L/2+0.9);
+ P(parts,new THREE.BoxGeometry(W-0.4,0.32,0.04),M.glass,0,0.98,-1.0);
+ [-1,1].forEach(sd=>P(parts,new THREE.BoxGeometry(0.04,0.28,1.3),M.glass,sd*(W/2-0.16),0.98,-0.2));
+ const tailMat=M.tail.clone();tailMat.userData.unique=true;
+ P(parts,roundedBoxGeo(W-0.2,0.16,0.06,0.02),tailMat,0,0.62,L/2-0.02);
+ [-0.55,0.55].forEach(x=>P(parts,new THREE.CylinderGeometry(0.13,0.13,0.08,14),M.head,x,0.6,-L/2+0.02,Math.PI/2,0,0));
+ P(parts,roundedBoxGeo(0.8,0.22,0.06,0.03),M.dark,0,0.55,-L/2+0.015);
+ mergeInto(tilt,parts,true);
+ const wheels=[],steers=[],wr=0.42;
+ [[-1.5,-0.92,1],[-1.5,0.92,1],[1.5,-0.92,0],[1.5,0.92,0]].forEach(([z,x,f])=>{
+  if(f){const st=new THREE.Group();st.position.set(x,wr*1.1,z);st.add(makeWheel(wr,0.22));g.add(st);wheels.push(st.children[0]);steers.push(st);}
+  else{const w=makeWheel(wr,0.24);w.position.set(x,wr*1.1,z);g.add(w);wheels.push(w);}});
+ const tailMat2=M.tail.clone();tailMat2.userData.unique=true;
+ return {g,tilt,wheels,steers,len:L+0.2,w:W+0.06,tailMat:tailMat2};
+}
 /* лёгкая двухколёсная модель для ИГРОКА (мопед / мотоцикл сезонного пропуска) — со своей tilt-группой и рулевым узлом */
 function buildMopedRig(colorHex,opts={}){
  const g=new THREE.Group(),tilt=new THREE.Group();g.add(tilt);
@@ -1511,7 +1618,7 @@ function buildRoad(m){
   seg.rotation.x=-Math.PI/2;seg.receiveShadow=true;seg.position.z=SEG_LEN/2-i*SEG_LEN;
   scene.add(seg);segments.push(seg);
  }
- roadMat.map=m.id==='sunset'?roadTexSunset:roadTex4;
+ roadMat.map=m.id==='sunset'?roadTexSunset:(m.id==='mega'?roadTexMega:roadTex4);
  roadMat.needsUpdate=true;
 }
 const groundMat=new THREE.MeshLambertMaterial({color:0x251629});
@@ -1571,6 +1678,23 @@ const rails=[];
   grp.position.set(side*999,0,20-s*240);
   grp.userData={side};
   scene.add(grp);rails.push(grp);
+ }});
+/* ограждения мега-трассы — с регулярными проёмами под въезд/съезд, свой набор, других режимов не касается */
+const megaRails=[];
+[-1,1].forEach(side=>{
+ for(let s=0;s<2;s++){
+  const grp=new THREE.Group();const beams=[],posts=[];
+  for(let i=0;i<6;i++){
+   const z=-i*40;
+   if(i%3===2)continue; // проём — съезд/выезд с трассы
+   P(beams,new THREE.BoxGeometry(0.07,0.3,40),M.rail,0,0.72,z-20);
+   for(let j=0;j<3;j++)P(posts,new THREE.BoxGeometry(0.09,0.72,0.09),M.dark,0,0.36,z-7-j*13);
+  }
+  mergeInto(grp,beams,false);mergeInto(grp,posts,false);
+  grp.position.set(side*999,0,20-s*240);
+  grp.userData={side};
+  grp.visible=false;
+  scene.add(grp);megaRails.push(grp);
  }});
 const lampMat=new THREE.MeshStandardMaterial({color:0xffe6b0,emissive:0xffcf8a,emissiveIntensity:0.5});
 const streetlights=[];
@@ -1699,7 +1823,7 @@ function updateSkids(dt){
 /* ================= traffic ================= */
 const traffic=[];
 let chasers=[];
-let spawnTimer=1,oncomingTimer=2,policeTimer=20,crossTimer=15,crossTimer2=40,potatoTimer=rand(20,35);
+let spawnTimer=1,oncomingTimer=2,policeTimer=20,crossTimer=15,crossTimer2=40,potatoTimer=rand(20,35),barricadeTimer=rand(14,20);
 function nearestLane(x){let bd=1e9,bx=mode.lanes[0];
  mode.lanes.forEach(l=>{const d=Math.abs(l-x);if(d<bd){bd=d;bx=l;}});return bx;}
 function oncomingBoundary(){
@@ -1744,11 +1868,26 @@ function spawnWave(){
  const occ={};traffic.forEach(t=>{if(!t.oncoming&&Math.abs(t.z-z)<42)occ[t.lane]=1;});
  const free=mode.lanes.filter(x=>occ[x]===undefined);
  if(free.length<=1)return;
- let n=Math.random()<0.45?2:1;n=Math.min(n,free.length-1);
+ let n;
+ if(mode.id==='mega')n=Math.max(1,Math.min(free.length-1,Math.ceil(free.length*0.65)));
+ else n=Math.min(Math.random()<0.45?2:1,free.length-1);
  if(n<=0)return;
  free.sort(()=>Math.random()-0.5).slice(0,n).forEach(x=>spawnAt(x,z-rand(0,14)));
 }
 function spawnOncoming(){
+ if(mode.id==='mega'){
+  const occ={};traffic.forEach(t=>{if(t.oncoming&&Math.abs(t.z-(player.z-340))<50)occ[t.lane]=1;});
+  const free=mode.oncoming.filter(x=>occ[x]===undefined);
+  if(!free.length)return;
+  const n=Math.max(1,Math.min(free.length,Math.ceil(free.length*0.5)));
+  free.sort(()=>Math.random()-0.5).slice(0,n).forEach(lane=>{
+   const m=buildSedan(pick(CAR_COLORS));m.g.rotation.y=Math.PI;
+   const z=player.z-rand(280,440);m.g.position.set(lane,0,z);scene.add(m.g);
+   traffic.push({m,type:'sedan',lane,x:lane,z,v:rand(20,27),len:4.5,w:1.8,wr:0.34,
+    passed:false,t:rand(0,9),ws:0,vx:0,oncoming:true});
+  });
+  return;
+ }
  const lane=pick(mode.oncoming);
  if(traffic.some(t=>t.oncoming&&t.lane===lane&&t.z<player.z-180))return;
  const m=buildSedan(pick(CAR_COLORS));
@@ -1777,6 +1916,28 @@ function spawnPolice(){
  }
  popup(count>1?'⚡⚡ ПРЕВЫШЕНИЕ! ДВОЙНАЯ ПОГОНЯ!':'⚡ ПРЕВЫШЕНИЕ! ПОЛИЦИЯ!','hot');blip(700,0.1,'square',0.1);
 }
+/* дорожный блокпост — конусы + баннер, перекрывает несколько полос мега-трассы */
+function buildBarrier(){
+ const g=new THREE.Group(),parts=[];
+ const coneMat=bodyMat(0xff6a2a);
+ [-0.7,0,0.7].forEach(x=>{
+  P(parts,new THREE.ConeGeometry(0.22,0.55,8),coneMat,x,0.28,0);
+  P(parts,new THREE.CylinderGeometry(0.26,0.26,0.04,8),bodyMat(0x1c1a1e),x,0.03,0);
+ });
+ P(parts,roundedBoxGeo(2.1,0.5,0.12,0.04),M.polStripe,0,0.75,0.3);
+ mergeInto(g,parts,true);
+ return {g,wheels:[],len:2.4,w:2.0,wr:0.3};
+}
+function spawnBarricade(){
+ const z=player.z-rand(280,360);
+ const n=Math.min(mode.lanes.length-2,2+Math.floor(Math.random()*2));
+ const blocked=[...mode.lanes].sort(()=>Math.random()-0.5).slice(0,n);
+ blocked.forEach(x=>{
+  const bm=buildBarrier();bm.g.position.set(x,0,z);scene.add(bm.g);
+  traffic.push({m:bm,type:'barrier',lane:x,x,z,v:0,len:bm.len,w:bm.w,wr:bm.wr,passed:false,t:0,ws:0,vx:0});
+ });
+ popup('🚧 БЛОКПОСТ — ПЕРЕСТРАИВАЙСЯ!','hot');blip(220,0.18,'square',0.12);
+}
 function spawnCrossHorse(){
  const fromLeft=Math.random()<0.5;
  const m=buildHorse(pick(MARE_COLORS),1.05);m.wheels=[];
@@ -1795,10 +1956,19 @@ function spawnChicken(){
 }
 function updateTrafficAll(dt){
  if(state===ST.COUNT)return;
- ramps.forEach(r=>{
-  if(r.z>player.z+30){r.z=player.z-rand(260,460);r.x=pick(mode.lanes);r.used=false;}
-  r.mesh.position.set(r.x,0,r.z);
- });
+ if(mode.id==='mega'){
+  ramps.forEach(r=>{r.mesh.position.set(0,0,player.z-99999);});
+ }else{
+  ramps.forEach(r=>{
+   if(r.z>player.z+30){r.z=player.z-rand(260,460);r.x=pick(mode.lanes);r.used=false;}
+   r.mesh.position.set(r.x,0,r.z);
+  });
+ }
+ let megaBlocked=null,megaBlockedZ=null;
+ if(mode.id==='mega'){
+  const b=traffic.find(x=>x.type==='barrier');
+  if(b){megaBlockedZ=b.z;megaBlocked=new Set(traffic.filter(x=>x.type==='barrier'&&Math.abs(x.z-b.z)<5).map(x=>x.lane));}
+ }
  for(let i=traffic.length-1;i>=0;i--){
   const t=traffic[i];
   let v=t.v;
@@ -1808,6 +1978,17 @@ function updateTrafficAll(dt){
     if(gap>0&&gap<t.len+13)v=Math.min(v,o.v);
    }}
   if(t.oncoming)t.z+=v*dt;else t.z-=v*dt;
+  if(megaBlocked&&t.type!=='barrier'&&!t.oncoming&&megaBlocked.has(t.lane)){
+   const dzB=megaBlockedZ-t.z;
+   if(dzB>0&&dzB<90){
+    const openLanes=mode.lanes.filter(x=>!megaBlocked.has(x));
+    if(openLanes.length){
+     const target=openLanes.reduce((a,b)=>Math.abs(b-t.x)<Math.abs(a-t.x)?b:a);
+     t.x+=(target-t.x)*Math.min(1,dt*1.3);
+     if(Math.abs(t.x-target)<0.4)t.lane=target;
+    }
+   }
+  }
   if(t.type==='moto'){
    const lo=mode.oncoming.length?-3.0:-(mode.roadHalf-0.6);
    const wobbleAmp=mode.slippery?2.3:1.4;
@@ -1857,6 +2038,9 @@ function buildPlayerModel(){
  else if(veh.moped)m=buildMopedRig(veh.color,{crate:veh.unlockType==='progress'});
  else if(veh.model==='offroad4x4')m=buildOffroad4x4(veh.color);
  else if(veh.model==='snowbuggy')m=buildSnowBuggy(veh.color);
+ else if(veh.model==='openwheeler')m=buildOpenWheeler(veh.color);
+ else if(veh.model==='hypercar')m=buildHypercar(veh.color);
+ else if(veh.model==='muscle')m=buildMuscle(veh.color);
  else if(veh.van)m=buildVan(veh.color,{tail:true,headCone:true});
  else if(veh.shape==='saloon')m=buildSaloon(veh.color,{tail:true,headCone:true,len:veh.len,whitewall:veh.whitewall});
  else if(veh.shape==='hatch')m=buildHatch(veh.color,{tail:true,headCone:true,len:veh.len});
@@ -2198,7 +2382,7 @@ function updateHUD(){
  const gn=player.v<1?'N':String(clamp(Math.ceil(player.v/(veh.vmax/5)),1,5));
  ui.gear.innerHTML='ПЕРЕДАЧА <b>'+gn+'</b>';
 }
-function refreshRecLabels(){$('#recA').textContent=record;$('#recB').textContent=record;$('#recC').textContent=record;}
+function refreshRecLabels(){$('#recA').textContent=record;$('#recB').textContent=record;$('#recC').textContent=record;$('#recD').textContent=record;}
 function refreshMeta(){
  const n=Object.keys(ach).length;
  $('#achLine').textContent='🏅 '+n+'/'+ACH.length+' · ЛУЧШИЙ ЗАЕЗД '+bestDist.toFixed(1)+' КМ · РЕКОРД '+record;
@@ -2239,6 +2423,9 @@ function setPreviewVeh(i){
  else if(v.moped)pvCar=buildMopedRig(v.color,{crate:v.unlockType==='progress'}).g;
  else if(v.model==='offroad4x4'){const mm=buildOffroad4x4(v.color);pvCar=mm.g;}
  else if(v.model==='snowbuggy'){const mm=buildSnowBuggy(v.color);pvCar=mm.g;}
+ else if(v.model==='openwheeler'){const mm=buildOpenWheeler(v.color);pvCar=mm.g;}
+ else if(v.model==='hypercar'){const mm=buildHypercar(v.color);pvCar=mm.g;}
+ else if(v.model==='muscle'){const mm=buildMuscle(v.color);pvCar=mm.g;}
  else if(v.van)pvCar=buildVan(v.color).g;
  else if(v.shape==='saloon')pvCar=buildSaloon(v.color,{len:v.len,whitewall:v.whitewall}).g;
  else if(v.shape==='hatch')pvCar=buildHatch(v.color,{len:v.len}).g;
@@ -2322,7 +2509,7 @@ function resetRace(){
  for(let i=0;i<7;i++)spawnAt(pick(mode.lanes),-70-i*rand(30,55));
  ramps.forEach(r=>{r.z=-rand(160,420);r.x=pick(mode.lanes);r.used=false;});
  spawnTimer=1.2;oncomingTimer=rand(1.5,3);policeTimer=rand(16,26);
- crossTimer=rand(12,20);crossTimer2=rand(28,55);potatoTimer=rand(20,35);
+ crossTimer=rand(12,20);crossTimer2=rand(28,55);potatoTimer=rand(20,35);barricadeTimer=rand(10,16);
  ui.combo.classList.remove('on');ui.drift.classList.remove('on');
  if(mode.id==='sunset')applyDusk(0);
 }
@@ -2444,7 +2631,7 @@ function onOvertake(t){
  }else{popup(pick(['ОБГОН +28','ЕСТЬ ОБГОН! +28','МИМО! +28','УШЁЛ ВПЕРЁД +28']));blip(920,0.07,'square',0.09);}
 }
 function checkRamps(){
- if(player.y>0)return;
+ if(player.y>0||mode.id==='mega')return;
  for(const r of ramps){
   if(!r.used&&Math.abs(r.z-player.z)<1.5&&Math.abs(r.x-player.x)<1.35&&player.v>12){
    r.used=true;player.vy=3.1+player.v*0.085;player.jumpOk=player.v>20;airRoofBonus=false;
@@ -2582,18 +2769,21 @@ function updateRun(dt){
  spawnTimer-=dt;
  if(spawnTimer<=0){
   spawnWave();
-  spawnTimer=rand(0.55,1.25)*(30/(15+player.v))*clamp(1-(-player.z/1000)*0.05,0.6,1);
+  const densityMul=mode.id==='mega'?0.28:1;
+  spawnTimer=rand(0.55,1.25)*(30/(15+player.v))*clamp(1-(-player.z/1000)*0.05,0.6,1)*densityMul;
  }
  potatoTimer-=dt;
- if(potatoTimer<=0){spawnPotato();potatoTimer=rand(32,58);}
+ if(potatoTimer<=0&&mode.id!=='mega'){spawnPotato();potatoTimer=rand(32,58);}
  if(mode.oncoming.length){
   oncomingTimer-=dt;
-  if(oncomingTimer<=0){spawnOncoming();oncomingTimer=rand(1.1,2.2);}
+  if(oncomingTimer<=0){spawnOncoming();oncomingTimer=mode.id==='mega'?rand(1.4,2.4):rand(1.1,2.2);}
  }
- if(mode.id==='sunset'){
+ if(mode.id==='sunset'||mode.id==='mega'){
   policeTimer-=dt;
-  if(chasers.length===0&&policeTimer<=0&&dist>250&&overSpeedT>5){
-   spawnPolice();policeTimer=rand(20,34)*(1-chaosLvl*0.4);
+  const policeGate=mode.id==='mega'?(dist>200&&overSpeedT>2):(dist>250&&overSpeedT>5);
+  if(chasers.length===0&&policeTimer<=0&&policeGate){
+   spawnPolice();
+   policeTimer=(mode.id==='mega'?rand(11,18):rand(20,34))*(1-chaosLvl*0.4);
   }
   for(let i=chasers.length-1;i>=0;i--){const p=chasers[i];
    p.chase-=dt;
@@ -2604,6 +2794,12 @@ function updateRun(dt){
     p.v=13;p.lane=nearestLane(p.x);chasers.splice(i,1);
     if(chasers.length===0){popup('+200 УШЁЛ ОТ ПОЛИЦИИ','hot');score+=200;unlock('cop');blip(990,0.15,'square',0.12);}
    }}
+  if(mode.id==='mega'){
+   barricadeTimer-=dt;
+   if(barricadeTimer<=0&&dist>350&&!traffic.some(x=>x.type==='barrier')){
+    spawnBarricade();barricadeTimer=rand(38,58);
+   }
+  }
  }else if(mode.id==='rf'){
   crossTimer-=dt;
   if(crossTimer<=0){spawnCrossHorse();crossTimer=rand(14,26);}
@@ -2626,12 +2822,12 @@ function updateRun(dt){
     }
     t.passed=true;
    }
-  }else if(t.type!=='police'&&t.type!=='cross'&&t.type!=='chicken'&&t.type!=='potato'){
+  }else if(t.type!=='police'&&t.type!=='cross'&&t.type!=='chicken'&&t.type!=='potato'&&t.type!=='barrier'){
    if(!t.passed&&dz>(t.len/2+2.3)){t.passed=true;onOvertake(t);}
   }
   const closeZ=Math.abs(dz)<(t.len+player.len)/2*0.72,closeX=Math.abs(t.x-player.x)<(t.w+player.wid)/2*0.76;
   if(grounded&&closeZ&&closeX){doCrash(t);break;}
-  const landable=t.type!=='chicken'&&t.type!=='cross'&&t.type!=='mare'&&t.type!=='potato';
+  const landable=t.type!=='chicken'&&t.type!=='cross'&&t.type!=='mare'&&t.type!=='potato'&&t.type!=='barrier';
   if(!grounded&&closeZ&&closeX&&!airRoofBonus&&landable){
    airRoofBonus=true;
    const bonus=t.w>2.1?120:(t.w>1.4?90:70);
@@ -2726,24 +2922,31 @@ function updateWorldFollow(dt){
  dirL.target.position.set(player.x,0,player.z);
  ground.position.z=player.z;
  segments.forEach(seg=>{if(seg.position.z-SEG_LEN/2>player.z+60)seg.position.z-=SEGS*SEG_LEN;});
- sideA.forEach(grp=>{if(grp.position.z-425>player.z+40)grp.position.z-=900;});
- sideB.forEach(grp=>{if(grp.position.z-420>player.z+40)grp.position.z-=924;});
- bushes.forEach(grp=>{if(grp.position.z-240>player.z+30)grp.position.z-=560;});
+ const isMega=mode.id==='mega';
+ const megaOff=isMega?mode.roadHalf-9.6:0;
+ sideA.forEach(grp=>{grp.visible=!isMega;if(grp.position.z-425>player.z+40)grp.position.z-=900;});
+ sideB.forEach(grp=>{grp.visible=!isMega;if(grp.position.z-420>player.z+40)grp.position.z-=924;});
+ bushes.forEach(grp=>{grp.visible=!isMega;if(grp.position.z-240>player.z+30)grp.position.z-=560;});
  rails.forEach(grp=>{
+  grp.visible=mode.id!=='mega';
+  grp.position.x=grp.userData.side*(mode.roadHalf+0.6);
+  if(grp.position.z-240>player.z+40)grp.position.z-=480;});
+ megaRails.forEach(grp=>{
+  grp.visible=mode.id==='mega';
   grp.position.x=grp.userData.side*(mode.roadHalf+0.6);
   if(grp.position.z-240>player.z+40)grp.position.z-=480;});
  streetlights.forEach(l=>{
   l.g.position.x=l.g.userData.side*(mode.roadHalf+1.3);
   if(l.g.position.z>player.z+50)l.g.position.z-=960;});
- bbs.forEach(g=>{if(g.position.z>player.z+40){
+ bbs.forEach(g=>{g.visible=!isMega;if(g.position.z>player.z+40){
   g.position.z-=750;drawBB(g,pick(bbTexts()));
   g.position.x=-g.position.x;
   g.rotation.y=g.position.x>0?-Math.PI/2:Math.PI/2;}});
- buildings.forEach(g=>{if(g.position.z>player.z+40){
+ buildings.forEach(g=>{g.visible=!isMega;if(g.position.z>player.z+40){
   g.position.z-=950;drawBuildingBanner(g,pick(bbTexts()));}});
- signs.forEach(g=>{if(g.position.z>player.z+30)g.position.z-=960;});
- kmMarkers.forEach(g=>{if(g.position.z>player.z+40){g.position.z-=1000;drawKm(g);}});
- pylons.forEach(g=>{if(g.position.z>player.z+60)g.position.z-=950;});
+ signs.forEach(g=>{g.position.x=(g.position.x>0?1:-1)*(10.6+megaOff);if(g.position.z>player.z+30)g.position.z-=960;});
+ kmMarkers.forEach(g=>{g.position.x=9.0+megaOff;if(g.position.z>player.z+40){g.position.z-=1000;drawKm(g);}});
+ pylons.forEach(g=>{g.position.x=(g.position.x>0?1:-1)*(16+megaOff);if(g.position.z>player.z+60)g.position.z-=950;});
  holes.forEach(g=>{if(g.position.z>player.z+30){
   g.position.z-=900;g.position.x=pick(mode.lanes)+rand(-0.8,0.8);}});
  clouds.forEach(c=>{c.position.x+=dt*2.2;if(c.position.x>340)c.position.x=-340;});
