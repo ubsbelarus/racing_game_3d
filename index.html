@@ -115,6 +115,52 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 @keyframes chev{to{background-position:59px 0}}
 .lead{max-width:440px;color:var(--dim);font-size:15px;line-height:1.5}
 .meta{margin-top:14px;font-size:12px;color:var(--amber);letter-spacing:.14em;font-weight:700}
+.curChip{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:var(--panel);border:1px solid var(--line);
+  padding:8px 16px 8px 12px;clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%)}
+.curSign{width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#8fe0c8,#2ab894);color:#0c2620;
+  font-family:var(--disp);font-weight:900;font-size:13px;display:grid;place-items:center;flex-shrink:0}
+.curVal{font-family:var(--disp);font-weight:800;font-size:17px;transform:skewX(-6deg)}
+.curLbl{font-size:9px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;font-weight:700}
+.seasonPanel{margin-top:22px;background:var(--panel);border:1px solid var(--line);padding:16px 18px;max-width:440px;
+  clip-path:polygon(0 0,100% 0,100% 100%,14px 100%,0 calc(100% - 14px))}
+.seasonHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.seasonTag{font-family:var(--disp);font-weight:800;font-size:12px;letter-spacing:.1em;color:var(--amber)}
+.seasonLvl{font-size:10px;letter-spacing:.14em;color:var(--dim);font-weight:700;text-transform:uppercase}
+.seasonLvl b{color:var(--cream);font-family:var(--disp);font-size:13px}
+#spBar{width:100%;height:8px;background:rgba(255,255,255,.12);overflow:hidden;
+  clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+#spBarFill{height:100%;width:0%;background:linear-gradient(90deg,#2ab8a8,#8ff0ff);transition:width .3s}
+.spSub{font-size:10px;color:var(--dim);letter-spacing:.08em;margin:5px 0 12px;text-align:right}
+.questList{display:flex;flex-direction:column;gap:7px}
+.qRow{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--dim);letter-spacing:.02em}
+.qRow .qDot{width:16px;height:16px;flex-shrink:0;border:1px solid var(--line);display:grid;place-items:center;
+  font-size:10px;color:transparent;transform:skewX(-8deg)}
+.qRow.done .qDot{background:linear-gradient(180deg,#8fe0c8,#2ab894);border-color:transparent;color:#0c2620}
+.qRow.done{color:var(--cream)}
+.qRow .qBar{flex:1;height:5px;background:rgba(255,255,255,.1);overflow:hidden}
+.qRow .qBar i{display:block;height:100%;background:var(--amber)}
+.qRow .qNum{font-size:9px;color:var(--dim);white-space:nowrap;flex-shrink:0}
+.qRow .qDesc{width:148px;flex-shrink:0;line-height:1.25}
+.lockWrap{position:relative}
+.lockWrap.locked #pvWrap{filter:grayscale(.85) brightness(.55)}
+.buyBar{display:none;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,90,42,.14);
+  border:1px dashed var(--line);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--dim)}
+.lockWrap.locked .buyBar{display:flex}
+.buyBar b{color:var(--amber);font-family:var(--disp);font-size:15px}
+.btnBuy{font-family:var(--disp);font-weight:800;font-size:12px;border:none;cursor:pointer;padding:9px 16px;
+  color:#0c2620;background:linear-gradient(180deg,#8fe0c8,#2ab894);transform:skewX(-8deg);transition:.15s}
+.btnBuy:hover{transform:skewX(-8deg) translateY(-2px)}
+.btnBuy:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.tuneBlock{margin-top:2px;margin-bottom:16px;display:flex;flex-direction:column;gap:8px}
+.tuneRow{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.12em;color:var(--dim);
+  text-transform:uppercase;font-weight:700}
+.tuneRow .tn{width:76px;flex-shrink:0}
+.tuneRow .pips{flex-shrink:0}
+.btnTune{margin-left:auto;font-family:var(--disp);font-weight:700;font-size:10px;border:1px solid var(--line);
+  background:transparent;color:var(--cream);cursor:pointer;padding:6px 10px;transform:skewX(-8deg);transition:.15s;white-space:nowrap}
+.btnTune:hover:not(:disabled){border-color:var(--teal);color:var(--teal)}
+.btnTune:disabled{opacity:.35;cursor:not-allowed}
+.lockWrap.locked .tuneBlock{opacity:.35;pointer-events:none}
 .modes{display:flex;flex-direction:column;gap:14px;margin-top:24px}
 .mode{display:grid;grid-template-columns:118px 1fr auto;gap:16px;align-items:center;background:var(--panel);
   border:1px solid var(--line);padding:12px 18px 12px 0;cursor:pointer;transition:.2s;
@@ -129,6 +175,11 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .th-rf{background:linear-gradient(#262b32,#48525e 58%,#69737f)}
 .th-rf::before{content:'';position:absolute;left:0;right:0;bottom:0;height:24%;background:#22262b;border-top:2px dashed #8b939c}
 .th-rf span{position:absolute;bottom:6%;left:50%;transform:translateX(-50%);font-size:34px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+.th-winter{background:linear-gradient(#7c8a92,#c3d0d6 55%,#eef4f6);position:relative}
+.th-winter::before{content:'';position:absolute;left:0;right:0;bottom:0;height:26%;background:#dfe8ec;border-top:2px dashed #8f9aa1}
+.th-winter::after{content:'❄ ❄ ❄';position:absolute;top:8px;left:0;right:0;text-align:center;font-size:11px;
+  color:rgba(255,255,255,.8);letter-spacing:6px;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.th-winter span{position:absolute;bottom:4%;left:50%;transform:translateX(-50%);font-size:30px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
 .mode h3{font-family:var(--disp);font-size:16px;font-weight:800;margin-bottom:4px}
 .mode p{font-size:13px;color:var(--dim);line-height:1.35;max-width:360px}
 .mode .rec{display:inline-block;margin-top:6px;font-size:10px;letter-spacing:.18em;color:var(--amber);font-weight:700}
@@ -297,7 +348,8 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
       <div class="chevrons"></div>
       <p class="lead">Закатная трасса, встречка, мотоциклы, пикапы, фуры, автокраны и мигающие спецсигналы.
         Просачивайся между рядами, рискуй на встречной и держи серию — очки капают только за скорость и риск.</p>
-      <div class="meta" id="achLine">🏅 0/10</div>
+      <div class="meta" id="achLine">🏅 0/11</div>
+      <div class="curChip"><div class="curSign">Б</div><div><div class="curLbl">Баланс</div><div class="curVal" id="curVal">0 Br</div></div></div>
     </div>
     <div class="modes">
       <div class="mode sel" data-mode="0">
@@ -315,10 +367,27 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
           <span class="rec">РЕКОРД: <b id="recB">0</b></span></div>
         <div class="go">ВЫБРАТЬ <i>▸</i></div>
       </div>
+      <div class="mode" data-mode="2">
+        <div class="thumb th-winter"><span>🏔</span></div>
+        <div><h3>ЗИМНИЙ ТРАКТ</h3>
+          <p>Гололёд — дорогу заносит от лёгкого руления. В сугробах прячутся трамплины, а мотоциклисты
+            то и дело сами уходят в занос и улетают в кювет. Держи руль твёрже.</p>
+          <span class="rec">РЕКОРД: <b id="recC">0</b></span></div>
+        <div class="go">ВЫБРАТЬ <i>▸</i></div>
+      </div>
+    </div>
+    <div class="seasonPanel" id="seasonPanel">
+      <div class="seasonHead">
+        <span class="seasonTag">🏁 СЕЗОННЫЙ ПРОПУСК</span>
+        <span class="seasonLvl">УРОВЕНЬ <b id="spLvl">0</b>/10</span>
+      </div>
+      <div id="spBar"><div id="spBarFill"></div></div>
+      <div class="spSub" id="spSub">0 / 250 XP</div>
+      <div class="questList" id="questList"></div>
     </div>
   </div>
   <div class="g-right">
-    <div class="carPanel">
+    <div class="carPanel lockWrap" id="carPanel">
       <div id="pvWrap"><canvas id="pv" width="380" height="212"></canvas></div>
       <div class="carHead">
         <div class="carName" id="carName">КОПЕЙКА</div>
@@ -326,11 +395,17 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
       </div>
       <div id="carTop">МАКС. 137 КМ/Ч</div>
       <div class="plate" id="plate">А000АА <i>777</i></div>
+      <div class="buyBar" id="buyBar"><span id="buyText">🔒 Не куплено · цена <b id="buyPrice">0 Br</b></span><button class="btnBuy" id="btnBuy">КУПИТЬ</button></div>
       <div class="swatches" id="swatches"></div>
       <div class="stats3">
         <div class="statRow"><span>Скорость</span><span class="pips" id="pSpd"></span></div>
         <div class="statRow"><span>Разгон</span><span class="pips" id="pAcc"></span></div>
         <div class="statRow"><span>Управление</span><span class="pips" id="pHnd"></span></div>
+      </div>
+      <div class="tuneBlock">
+        <div class="tuneRow"><span class="tn">Двигатель</span><span class="pips" id="tSpd"></span><button class="btnTune" data-k="0" id="tuneBtn0">+1 · <b id="tunePrice0">0</b> Br</button></div>
+        <div class="tuneRow"><span class="tn">Турбина</span><span class="pips" id="tAcc"></span><button class="btnTune" data-k="1" id="tuneBtn1">+1 · <b id="tunePrice1">0</b> Br</button></div>
+        <div class="tuneRow"><span class="tn">Подвеска</span><span class="pips" id="tHnd"></span><button class="btnTune" data-k="2" id="tuneBtn2">+1 · <b id="tunePrice2">0</b> Br</button></div>
       </div>
       <div class="carNav">
         <button class="rbtn" id="carPrev">◀</button>
@@ -375,6 +450,7 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
     <div class="stat"><div class="v" id="cDist">0</div><div class="l">Дистанция, км</div></div>
     <div class="stat"><div class="v" id="cOver">0</div><div class="l">Обгонов</div></div>
     <div class="stat"><div class="v" id="cMax">0</div><div class="l">Макс. км/ч</div></div>
+    <div class="stat" style="grid-column:1/-1;border-color:rgba(90,220,190,.4)"><div class="v" id="cCur" style="color:#5adcbe">+0 Br</div><div class="l">Заработано</div></div>
   </div>
   <div class="btnRow">
     <button class="btn btn-big" id="btnRetry">ЗАНОВО</button>
@@ -397,23 +473,38 @@ let timeScale=1,slowT=0,slowPunch=0;
 /* ================= data ================= */
 const RIDES={
  sunset:[
-  {name:'КОПЕЙКА',   color:0xd98a2b, vmax:38, accel:13,   steer:7.6, spd:3,acc:3,hnd:4},
-  {name:'БУХАНКА',   color:0x6b8f4e, vmax:32, accel:12,   steer:9.5, spd:2,acc:3,hnd:5, van:true},
-  {name:'ВОЛГА',     color:0x3e7f8c, vmax:43, accel:10.5, steer:6.4, spd:4,acc:2,hnd:3, shape:'saloon'},
-  {name:'ЗАПОРОЖЕЦ', color:0xc14b32, vmax:34, accel:15.5, steer:9.2, spd:2,acc:4,hnd:5, shape:'bubble'},
-  {name:'ДЕВЯТКА',   color:0x9aa5b1, vmax:47, accel:14.5, steer:7.0, spd:5,acc:4,hnd:3, shape:'hatch'},
-  {name:'ЧАЙКА',     color:0x23232b, vmax:49, accel:9.5,  steer:5.6, spd:5,acc:2,hnd:2, len:6.3, limo:true},
+  {name:'КОПЕЙКА',   color:0xd98a2b, vmax:38, accel:13,   steer:7.6, spd:3,acc:3,hnd:4, price:0},
+  {name:'БУХАНКА',   color:0x6b8f4e, vmax:32, accel:12,   steer:9.5, spd:2,acc:3,hnd:5, van:true, price:900},
+  {name:'ВОЛГА',     color:0x3e7f8c, vmax:43, accel:10.5, steer:6.4, spd:4,acc:2,hnd:3, shape:'saloon', price:1600},
+  {name:'ЗАПОРОЖЕЦ', color:0xc14b32, vmax:34, accel:15.5, steer:9.2, spd:2,acc:4,hnd:5, shape:'bubble', price:700},
+  {name:'ДЕВЯТКА',   color:0x9aa5b1, vmax:47, accel:14.5, steer:7.0, spd:5,acc:4,hnd:3, shape:'hatch', price:2400},
+  {name:'ЧАЙКА',     color:0x23232b, vmax:49, accel:9.5,  steer:5.6, spd:5,acc:2,hnd:2, len:6.3, limo:true, price:4200},
+  {name:'МОПЕД',     color:0xffb144, vmax:24, accel:19,   steer:11.5, spd:2,acc:5,hnd:5, moped:true, unlockType:'progress', price:0},
+  {name:'МОТОЦИКЛ ПРОПУСКА', color:0x2ab8a8, vmax:47, accel:21, steer:10.5, spd:5,acc:5,hnd:4, moped:true, unlockType:'season', price:0},
  ],
  rf:[
-  {name:'ГНЕДОЙ',    color:0x8a5a34, vmax:30, accel:14,   steer:9.0, spd:3,acc:4,hnd:4, horse:true},
-  {name:'СИВКА',     color:0xb0a89e, vmax:34, accel:12,   steer:7.5, spd:4,acc:3,hnd:3, horse:true},
-  {name:'БУЛАНКА',   color:0xd9b877, vmax:32, accel:16,   steer:8.5, spd:3,acc:5,hnd:4, horse:true},
-  {name:'КОБЫЛИЦА',  color:0x3a2c24, vmax:37, accel:13.5, steer:9.8, spd:5,acc:3,hnd:5, horse:true},
+  {name:'ГНЕДОЙ',    color:0x8a5a34, vmax:30, accel:14,   steer:9.0, spd:3,acc:4,hnd:4, horse:true, price:0},
+  {name:'СИВКА',     color:0xb0a89e, vmax:34, accel:12,   steer:7.5, spd:4,acc:3,hnd:3, horse:true, price:600},
+  {name:'БУЛАНКА',   color:0xd9b877, vmax:32, accel:16,   steer:8.5, spd:3,acc:5,hnd:4, horse:true, price:1100},
+  {name:'КОБЫЛИЦА',  color:0x3a2c24, vmax:37, accel:13.5, steer:9.8, spd:5,acc:3,hnd:5, horse:true, price:1900},
+ ],
+ winter:[
+  {name:'НИВА',       color:0x5a6b4a, vmax:34, accel:13,   steer:8.2, spd:3,acc:3,hnd:5, model:'offroad4x4', price:0},
+  {name:'УАЗИК',      color:0x707a72, vmax:28, accel:11,   steer:9.6, spd:2,acc:2,hnd:5, van:true, plow:true, rack:true, price:650},
+  {name:'ГАЗ-24 ЗИМА',color:0x8f9aa1, vmax:41, accel:10,   steer:6.0, spd:4,acc:2,hnd:3, shape:'saloon', guard:true, spot:true, price:1500},
+  {name:'СНЕГОБУГГИ', color:0xd6dfe3, vmax:31, accel:16.5, steer:9.9, spd:2,acc:5,hnd:5, model:'snowbuggy', price:950},
+  {name:'МОПЕД',      color:0xffb144, vmax:22, accel:18,   steer:11.5, spd:2,acc:5,hnd:5, moped:true, unlockType:'progress', price:0},
+  {name:'МОТОЦИКЛ ПРОПУСКА', color:0x2ab8a8, vmax:45, accel:20, steer:10.2, spd:5,acc:5,hnd:4, moped:true, unlockType:'season', price:0},
  ]
 };
+/* фиксируем базовые характеристики до применения тюнинга */
+for(const k in RIDES)RIDES[k].forEach(v=>{v.baseVmax=v.vmax;v.baseAccel=v.accel;v.baseSteer=v.steer;});
+const TUNE_MAX=3;
+const CUR='Br';
 const SWATCHES={
  sunset:[0xd98a2b,0xc14b32,0x3e7f8c,0x9aa5b1,0x6b8f4e,0x2b2b33],
  rf:[0x8a5a34,0x3a2c24,0xb0a89e,0xd9b877,0x5f4a34,0xe8e0d4],
+ winter:[0x5a6b4a,0x2d3a2f,0xb9c6cf,0x707a82,0x9aa9a0,0xffffff],
 };
 const MODES=[
  {id:'sunset',fog:0x9c4a3c,fogFar:340,sun:true,mtn:0x3a2140,ground:0x251629,road:0xd8b0a4,
@@ -422,8 +513,12 @@ const MODES=[
   sky:[[0,'#150b30'],[0.4,'#39194f'],[0.6,'#7c2c54'],[0.72,'#c4463c'],[0.8,'#ff7a38'],[0.88,'#ffb469'],[1,'#ffd9a0']]},
  {id:'rf',fog:0x69737f,fogFar:290,sun:false,mtn:0x3d454e,ground:0x24282d,road:0xa8b0b8,
   lanes:[-4.8,-1.6,1.6,4.8],oncoming:[],roadHalf:6.4,
-  hemi:[0x93a0b0,0x1e2226,0.95],dir:[0xd6dee6,0.9],
+  hemi:[0x93a0b0,0x1e2226,0.95],dir:[0xd6dee6,0.9],precip:'rain',
   sky:[[0,'#232830'],[0.45,'#3a414c'],[0.68,'#57616d'],[0.82,'#76808c'],[1,'#949ea9']]},
+ {id:'winter',fog:0xaebcc4,fogFar:260,sun:false,mtn:0x8b99a1,ground:0xe8eef2,road:0x8f9aa1,
+  lanes:[-4.8,-1.6,1.6,4.8],oncoming:[],roadHalf:6.4,
+  hemi:[0xc7d6dd,0x707d82,0.95],dir:[0xdfeaf0,1.0],slippery:true,precip:'snow',
+  sky:[[0,'#7c8a92'],[0.4,'#9aa8b0'],[0.68,'#c3d0d6'],[0.85,'#dde8ec'],[1,'#eef4f6']]},
 ];
 const CAR_COLORS=[0xc14b32,0x3e7f8c,0xd6d0c4,0x4a4f58,0x6b8f4e,0xb8863b,0x7a4f8f];
 const TRUCK_COLORS=[0x3e7f8c,0xc14b32,0x4a4f58,0xb8863b];
@@ -431,8 +526,12 @@ const BUS_COLORS=[0xc14b32,0x3e7f8c,0xd6d0c4,0xe0a33c];
 const MARE_COLORS=[0x8a6a4a,0x5f4a34,0xb0a49a];
 const PICKUP_COLORS=[0x4a4f58,0xb8863b,0x3e7f8c,0x7a2f28];
 const CRANE_COLORS=[0xe0a33c,0xc14b32];
-const BB_TEXTS=['ПОЛНЫЙ ГАЗ','КВАС «ОКРОШКА»','ШИНОМОНТАЖ 24Ч','ШУРПА У АШОТА','БАНЯ · ВЕНИКИ','ЛОМБАРД «У ДЯДИ»','АВТОСЕРВИС «КОПЕЙКА»','РЫБАЛКА ЗДЕСЬ','ПЕЛЬМЕНИ ОПТОМ','ОВЁС ОПТОМ',
- 'КУМЫС ХОЛОДНЫЙ','ЧАЙХАНА «У КОБЫЛИЦЫ»','ЧАЙ · ПЛОВ · ЛЕПЁШКИ','СВЕЖИЙ КУМЫС ЗДЕСЬ','ЗАВАРИ ЧАЙКУ'];
+const BB_TEXTS={
+ sunset:['ПОЛНЫЙ ГАЗ','ШИНОМОНТАЖ 24Ч','БАНЯ · ВЕНИКИ','ЛОМБАРД «У ДЯДИ»','АВТОСЕРВИС «КОПЕЙКА»','РЫБАЛКА ЗДЕСЬ','ПЕЛЬМЕНИ ОПТОМ','КВАС «ОКРОШКА»'],
+ rf:['ШУРПА У АШОТА','ОВЁС ОПТОМ','КУМЫС ХОЛОДНЫЙ','ЧАЙХАНА «У КОБЫЛИЦЫ»','ЧАЙ · ПЛОВ · ЛЕПЁШКИ','СВЕЖИЙ КУМЫС ЗДЕСЬ','ЗАВАРИ ЧАЙКУ','КУЗНИЦА · ПОДКОВЫ'],
+ winter:['ШИНОМОНТАЖ · ШИПОВКА','ГЛИНТВЕЙН ЗДЕСЬ','ПРОКАТ ЛЫЖ','БАНЯ · ВЕНИКИ','ГОРЯЧИЕ ПИРОЖКИ','ТРОС · БУКСИРОВКА','ЦЕПИ НА КОЛЁСА','АВТОСЕРВИС «МОРОЗ»'],
+};
+function bbTexts(){return BB_TEXTS[mode.id]||BB_TEXTS.sunset;}
 const REASONS={sedan:'Лоб в лоб с легковушкой',taxi:'Такси подрезало — шашечки не помогли',
  truck:'Врезался в фуру. Фура даже не заметила',bus:'Автобус тебя не увидел. Он большой',
  minibus:'Маршрутка — страшная сила',moto:'Мотоциклист всё видел. И осуждает',
@@ -909,6 +1008,81 @@ function buildMinibus(){
   const w=makeWheel(0.426,0.1);w.position.set(x,0.47,z);g.add(w);wheels.push(w);});
  return {g,wheels,len:5.2,w:2.0,wr:0.38};
 }
+/* добавки для зимних машин: не переиспользуют форму кузова, крепятся поверх готовой модели */
+function addRoofRack(g,w,yTop,zHalf){
+ const m=M.dark;
+ [-w/2+0.07,w/2-0.07].forEach(x=>{const b=new THREE.Mesh(new THREE.BoxGeometry(0.045,0.09,zHalf*2),m);b.position.set(x,yTop,0);g.add(b);});
+ for(let i=-2;i<=2;i++){const r=new THREE.Mesh(new THREE.BoxGeometry(w-0.22,0.026,0.026),m);r.position.set(0,yTop,i*zHalf*0.4);g.add(r);}
+}
+function addSnowPlow(g,w,zFront){
+ const bm=bodyMat(0xd8dee4);
+ const blade=new THREE.Mesh(new THREE.BoxGeometry(w+0.34,0.46,0.09),bm);blade.position.set(0,0.4,zFront-0.32);g.add(blade);
+ const trim=new THREE.Mesh(new THREE.BoxGeometry(w+0.34,0.07,0.1),M.hub);trim.position.set(0,0.62,zFront-0.32);g.add(trim);
+ [-w*0.32,w*0.32].forEach(x=>{const arm=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.06,0.36),M.dark);arm.position.set(x,0.4,zFront-0.14);g.add(arm);});
+}
+function addGrilleGuard(g,w,zFront){
+ const bar=(y)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w*0.72,0.035,0.035),M.hub);b.position.set(0,y,zFront-0.06);g.add(b);};
+ bar(0.42);bar(0.58);bar(0.74);
+ [-w*0.32,w*0.32].forEach(x=>{const s=new THREE.Mesh(new THREE.BoxGeometry(0.035,0.42,0.035),M.hub);s.position.set(x,0.58,zFront-0.06);g.add(s);});
+}
+function addRoofSpot(g,x,y,z){
+ const pod=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.09,10),M.dark);pod.rotation.z=Math.PI/2;pod.position.set(x,y,z);g.add(pod);
+ const lens=new THREE.Mesh(new THREE.CylinderGeometry(0.055,0.055,0.02,10),M.head);lens.rotation.z=Math.PI/2;lens.position.set(x,y,z-0.05);g.add(lens);
+}
+/* НИВА — самостоятельная модель внедорожника: багажник на крыше, запаска на корме, высокий клиренс */
+function buildOffroad4x4(colorHex){
+ const g=new THREE.Group(),tilt=new THREE.Group();g.add(tilt);
+ const cm=bodyMat(colorHex),parts=[];
+ const L=3.7,W=1.68;
+ P(parts,roundedBoxGeo(W,0.92,L,0.12),cm,0,0.8,0);
+ P(parts,roundedBoxGeo(W-0.08,0.6,L*0.6,0.1),cm,0,1.32,-0.16);
+ P(parts,new THREE.BoxGeometry(W-0.2,0.4,0.05),M.glass,0,1.32,-L*0.3-0.02);
+ [-1,1].forEach(sd=>P(parts,new THREE.BoxGeometry(0.05,0.38,L*0.48),M.glass,sd*(W/2-0.02),1.3,-0.06));
+ P(parts,new THREE.BoxGeometry(W-0.22,0.36,0.05),M.glass,0,1.32,L*0.3);
+ P(parts,roundedBoxGeo(0.14,0.14,0.1,0.03),M.dark,0,0.5,-L/2-0.05);
+ P(parts,roundedBoxGeo(W+0.06,0.2,0.14,0.05),M.bumper,0,0.36,-L/2-0.02);
+ P(parts,roundedBoxGeo(W+0.06,0.2,0.14,0.05),M.bumper,0,0.36,L/2+0.02);
+ [-0.5,0.5].forEach(x=>P(parts,new THREE.CylinderGeometry(0.12,0.12,0.09,14),M.head,x,0.82,-L/2+0.02,Math.PI/2,0,0));
+ const tailMat=M.tail.clone();tailMat.userData.unique=true;
+ [-0.55,0.55].forEach(x=>P(parts,roundedBoxGeo(0.18,0.26,0.06,0.025),tailMat,x,0.86,L/2+0.02));
+ P(parts,roundedBoxGeo(0.7,0.24,0.06,0.03),M.dark,0,0.5,-L/2+0.015);
+ mergeInto(tilt,parts,true);
+ const spare=makeWheel(0.36,0.14);spare.rotation.z=Math.PI/2;spare.position.set(0,0.86,L/2+0.17);tilt.add(spare);
+ addRoofRack(tilt,W,1.63,L*0.28);
+ const wheels=[],steers=[],wr=0.4;
+ [[-1.32,-0.78,1],[-1.32,0.78,1],[1.28,-0.78,0],[1.28,0.78,0]].forEach(([z,x,f])=>{
+  if(f){const st=new THREE.Group();st.position.set(x,wr*1.05,z);st.add(makeWheel(wr,0.15));g.add(st);wheels.push(st.children[0]);steers.push(st);}
+  else{const w=makeWheel(wr,0.15);w.position.set(x,wr*1.05,z);g.add(w);wheels.push(w);}
+ });
+ return {g,tilt,wheels,steers,len:L+0.2,w:W+0.06,tailMat};
+}
+/* СНЕГОБУГГИ — открытая рама с дугами безопасности и открытым мотором сзади — самостоятельная модель */
+function buildSnowBuggy(colorHex){
+ const g=new THREE.Group(),tilt=new THREE.Group();g.add(tilt);
+ const cm=bodyMat(colorHex),parts=[];
+ const L=2.9,W=1.55;
+ P(parts,roundedBoxGeo(W,0.3,L,0.1),cm,0,0.48,0);
+ P(parts,roundedBoxGeo(0.62,0.26,1.05,0.06),bodyMat(0x232228),0,0.66,-0.15);
+ P(parts,new THREE.CylinderGeometry(0.17,0.17,0.32,10),bodyMat(0x33383f),0,0.6,L/2-0.42,Math.PI/2,0,0);
+ const tailMat=M.tail.clone();tailMat.userData.unique=true;
+ P(parts,roundedBoxGeo(0.16,0.09,0.05,0.02),M.head,-0.48,0.4,-L/2+0.02);
+ P(parts,roundedBoxGeo(0.16,0.09,0.05,0.02),M.head,0.48,0.4,-L/2+0.02);
+ P(parts,roundedBoxGeo(0.15,0.08,0.05,0.02),tailMat,0,0.4,L/2-0.02);
+ mergeInto(tilt,parts,true);
+ const cageMat=M.dark;
+ [-0.6,0.6].forEach(x=>{
+  const arc=new THREE.Mesh(new THREE.TorusGeometry(0.46,0.032,6,12,Math.PI),cageMat);
+  arc.rotation.y=Math.PI/2;arc.position.set(x,0.5,0.05);tilt.add(arc);
+  const strut=new THREE.Mesh(new THREE.BoxGeometry(0.032,0.5,0.032),cageMat);strut.position.set(x,0.7,0.62);tilt.add(strut);
+ });
+ const bar=new THREE.Mesh(new THREE.BoxGeometry(1.16,0.032,0.032),cageMat);bar.position.set(0,0.94,0.5);tilt.add(bar);
+ const wheels=[],steers=[],wr=0.4;
+ [[-1.02,-0.76,1],[-1.02,0.76,1],[1.0,-0.76,0],[1.0,0.76,0]].forEach(([z,x,f])=>{
+  if(f){const st=new THREE.Group();st.position.set(x,wr*0.95,z);st.add(makeWheel(wr,0.24));g.add(st);wheels.push(st.children[0]);steers.push(st);}
+  else{const w=makeWheel(wr,0.24);w.position.set(x,wr*0.95,z);g.add(w);wheels.push(w);}
+ });
+ return {g,tilt,wheels,steers,len:L+0.15,w:W+0.08,tailMat};
+}
 function buildMoto(){
  const g=new THREE.Group(),parts=[];
  const bm=bodyMat(pick(CAR_COLORS));
@@ -924,6 +1098,26 @@ function buildMoto(){
  const wheels=[];
  [-0.75,0.75].forEach(z=>{const w=makeWheel(0.314,0.09);w.position.set(0,0.36,z);g.add(w);wheels.push(w);});
  return {g,wheels,len:2.1,w:0.7,wr:0.28};
+}
+/* лёгкая двухколёсная модель для ИГРОКА (мопед / мотоцикл сезонного пропуска) — со своей tilt-группой и рулевым узлом */
+function buildMopedRig(colorHex,opts={}){
+ const g=new THREE.Group(),tilt=new THREE.Group();g.add(tilt);
+ const bm=bodyMat(colorHex),parts=[];
+ P(parts,roundedBoxGeo(0.4,0.26,1.32,0.1),bm,0,0.54,0.06);
+ P(parts,roundedBoxGeo(0.32,0.46,0.4,0.09),bodyMat(0x2c2c34),0,0.92,0.2,-0.3,0,0);
+ P(parts,new THREE.SphereGeometry(0.15,12,10),bodyMat(0xd6d0c4),0,1.18,0.02);
+ P(parts,new THREE.BoxGeometry(0.2,0.08,0.06),M.glass,0,1.16,-0.13);
+ const tailMat=M.tail.clone();tailMat.userData.unique=true;
+ P(parts,roundedBoxGeo(0.15,0.11,0.08,0.035),M.head,0,0.64,-0.72);
+ P(parts,roundedBoxGeo(0.12,0.09,0.07,0.032),tailMat,0,0.64,0.7);
+ if(opts.crate)P(parts,roundedBoxGeo(0.42,0.22,0.34,0.05),M.cargo,0,0.62,0.86);
+ [-0.22,0.22].forEach(x=>P(parts,new THREE.CylinderGeometry(0.011,0.011,0.28,6),M.dark,x,1.02,-0.5,0,0,Math.PI/2));
+ mergeInto(tilt,parts,true);
+ const wheels=[],steers=[];
+ const rw=makeWheel(0.27,0.075);rw.position.set(0,0.27,0.66);g.add(rw);wheels.push(rw);
+ const fSteer=new THREE.Group();fSteer.position.set(0,0.27,-0.66);
+ const fw=makeWheel(0.27,0.075);fSteer.add(fw);g.add(fSteer);wheels.push(fw);steers.push(fSteer);
+ return {g,tilt,wheels,steers,len:1.65,w:0.68,tailMat,moped:true};
 }
 function buildPickup(color){
  const g=new THREE.Group(),cm=bodyMat(color),parts=[];
@@ -1368,7 +1562,7 @@ for(let i=0;i<8;i++){
 }
 const bbs=[];
 for(let i=0;i<5;i++){
- const g=makeBillboard();drawBB(g,BB_TEXTS[i%BB_TEXTS.length]);
+ const g=makeBillboard();drawBB(g,BB_TEXTS.sunset[i%BB_TEXTS.sunset.length]);
  const side=i%2?1:-1;
  g.position.set(side*13.2,0,-60-i*150);
  g.rotation.y=side>0?-Math.PI/2:Math.PI/2;
@@ -1376,7 +1570,7 @@ for(let i=0;i<5;i++){
 }
 const buildings=[];
 for(let i=0;i<10;i++){
- const g=makeBuilding(i);drawBuildingBanner(g,pick(BB_TEXTS));
+ const g=makeBuilding(i);drawBuildingBanner(g,pick(BB_TEXTS.sunset));
  const side=i%2?1:-1;
  g.position.set(side*rand(22,32),0,-30-i*95);
  g.rotation.y=side>0?Math.PI/2:-Math.PI/2;
@@ -1478,7 +1672,7 @@ let spawnTimer=1,oncomingTimer=2,policeTimer=20,crossTimer=15,crossTimer2=40,pot
 function nearestLane(x){let bd=1e9,bx=mode.lanes[0];
  mode.lanes.forEach(l=>{const d=Math.abs(l-x);if(d<bd){bd=d;bx=l;}});return bx;}
 function randomType(){
- if(mode.id==='sunset'){const r=Math.random();
+ if(mode.id!=='rf'){const r=Math.random();
   return r<0.36?'sedan':r<0.49?'taxi':r<0.58?'minibus':r<0.68?'moto':r<0.78?'pickup':
    r<0.90?'truck':r<0.97?'bus':'crane';}
  const r=Math.random();
@@ -1575,7 +1769,16 @@ function updateTrafficAll(dt){
   if(t.oncoming)t.z+=v*dt;else t.z-=v*dt;
   if(t.type==='moto'){
    const lo=mode.oncoming.length?-3.0:-(mode.roadHalf-0.6);
-   t.x=clamp(t.lane+Math.sin(tGlobal*t.wv+t.t)*1.4,lo,mode.roadHalf-0.6);
+   const wobbleAmp=mode.slippery?2.3:1.4;
+   t.x=clamp(t.lane+Math.sin(tGlobal*t.wv+t.t)*wobbleAmp,lo,mode.roadHalf-0.6);
+   if(mode.slippery&&!t.wiped&&Math.random()<dt*0.045){
+    t.wiped=true;
+    const cx=t.x,cz=t.z;
+    for(let k=0;k<10;k++)spawnPart(cx+rand(-1,1),rand(.2,1),cz+rand(-1,1),rand(-4,4),rand(2,6),rand(-4,4),rand(.3,.6),0xf4f8ff,rand(.3,.5),'smoke');
+    popup(pick(['МОТОЦИКЛИСТ УЛЕТЕЛ В СУГРОБ','ГОЛОЛЁД — И НЕТ МОТОЦИКЛИСТА','УШЁЛ В ЗАНОС… И В КЮВЕТ']));
+    blip(180,0.12,'sawtooth',0.1);
+    removeTraffic(i);continue;
+   }
   }
   if(t.vx){t.x+=t.vx*dt;if(Math.abs(t.x)>15){removeTraffic(i);continue;}}
   t.m.g.position.set(t.x,0,t.z);
@@ -1605,11 +1808,18 @@ function buildPlayerModel(){
  veh=list[carIdx];
  let m;
  if(veh.horse)m=buildHorseRig(veh.color);
+ else if(veh.moped)m=buildMopedRig(veh.color,{crate:veh.unlockType==='progress'});
+ else if(veh.model==='offroad4x4')m=buildOffroad4x4(veh.color);
+ else if(veh.model==='snowbuggy')m=buildSnowBuggy(veh.color);
  else if(veh.van)m=buildVan(veh.color,{tail:true,headCone:true});
- else if(veh.shape==='saloon')m=buildSaloon(veh.color,{tail:true,headCone:true,len:veh.len});
+ else if(veh.shape==='saloon')m=buildSaloon(veh.color,{tail:true,headCone:true,len:veh.len,whitewall:veh.whitewall});
  else if(veh.shape==='hatch')m=buildHatch(veh.color,{tail:true,headCone:true,len:veh.len});
  else if(veh.shape==='bubble')m=buildBubble(veh.color,{tail:true,headCone:true,len:veh.len});
  else m=buildSedan(veh.color,{tail:true,headCone:true,len:veh.len,limo:veh.limo,hoodOrnament:veh.limo});
+ if(veh.plow)addSnowPlow(m.g,m.w,-m.len/2);
+ if(veh.rack)addRoofRack(m.g,m.w,1.86,m.len*0.4);
+ if(veh.guard)addGrilleGuard(m.g,m.w,-m.len/2);
+ if(veh.spot)addRoofSpot(m.g,0.5,1.42,-m.len*0.1);
  player.tailMat=m.tailMat;player.g=m.g;player.tilt=m.tilt;
  player.wheels=m.wheels;player.steers=m.steers;player.legs=m.legs||null;player.legs2=m.legs2||null;
  player.len=m.len;player.wid=m.w;
@@ -1754,6 +1964,118 @@ let record=0;try{record=+localStorage.getItem('pg_record')||0;}catch(e){}
 let bestDist=0;try{bestDist=+localStorage.getItem('pg_dist')||0;}catch(e){}
 function saveRecord(){try{localStorage.setItem('pg_record',record);}catch(e){}}
 function saveDist(){try{localStorage.setItem('pg_dist',bestDist);}catch(e){}}
+
+/* ================= валюта / гараж: покупка и тюнинг ================= */
+let currency=0;try{currency=+localStorage.getItem('pg_cur')||0;}catch(e){}
+function saveCurrency(){try{localStorage.setItem('pg_cur',currency);}catch(e){}}
+function defaultOwned(){const o={};for(const k in RIDES)o[k]=RIDES[k].map(v=>v.price===0&&!v.unlockType);return o;}
+let owned=defaultOwned();
+try{const sv=JSON.parse(localStorage.getItem('pg_owned'));if(sv)for(const k in owned)if(sv[k])owned[k]=owned[k].map((b,i)=>b||!!sv[k][i]);}catch(e){}
+function saveOwned(){try{localStorage.setItem('pg_owned',JSON.stringify(owned));}catch(e){}}
+function defaultTune(){const t={};for(const k in RIDES)t[k]=RIDES[k].map(()=>[0,0,0]);return t;}
+let tune=defaultTune();
+try{const sv=JSON.parse(localStorage.getItem('pg_tune'));if(sv)for(const k in tune)if(sv[k])tune[k]=tune[k].map((row,i)=>sv[k][i]||row);}catch(e){}
+function saveTune(){try{localStorage.setItem('pg_tune',JSON.stringify(tune));}catch(e){}}
+function isOwned(mid,i){return !!(owned[mid]&&owned[mid][i]);}
+function tuneLv(mid,i){return (tune[mid]&&tune[mid][i])||[0,0,0];}
+function tunePrice(base,lvl){return Math.round((base||500)*0.22*(lvl+1));}
+function applyTuneToVeh(v,mid,i){
+ const lv=tuneLv(mid,i);
+ v.vmax=v.baseVmax*(1+0.045*lv[0]);
+ v.accel=v.baseAccel*(1+0.09*lv[1]);
+ v.steer=v.baseSteer*(1+0.06*lv[2]);
+}
+function refreshCurrencyUI(){
+ const el=$('#curVal');if(el)el.textContent=Math.floor(currency)+' '+CUR;
+}
+
+/* ================= прогресс: суммарная статистика, квесты, сезонный пропуск ================= */
+function defaultStats(){return {dist:0,earned:0,overtakes:0,jumps:0,drifts:0,races:0};}
+let stats=defaultStats();
+try{const sv=JSON.parse(localStorage.getItem('pg_stats'));if(sv)stats=Object.assign(defaultStats(),sv);}catch(e){}
+function saveStats(){try{localStorage.setItem('pg_stats',JSON.stringify(stats));}catch(e){}}
+
+const MOPED_REQ={dist:10000,earned:200000};
+const QUESTS=[
+ {id:'q_dist10',   desc:'Проехать 10 км суммарно',        get:()=>stats.dist,      target:10000, unit:'км', div:1000, xp:150, cur:500},
+ {id:'q_over50',   desc:'50 обгонов суммарно',             get:()=>stats.overtakes, target:50,    unit:'',   div:1,    xp:150, cur:400},
+ {id:'q_jump20',   desc:'20 прыжков с трамплина',          get:()=>stats.jumps,     target:20,    unit:'',   div:1,    xp:150, cur:400},
+ {id:'q_drift15',  desc:'15 удачных дрифтов',              get:()=>stats.drifts,    target:15,    unit:'',   div:1,    xp:150, cur:400},
+ {id:'q_races10',  desc:'10 заездов',                      get:()=>stats.races,     target:10,    unit:'',   div:1,    xp:150, cur:300},
+ {id:'q_earn5000', desc:'Заработать 5000 Br суммарно',     get:()=>stats.earned,    target:5000,  unit:'Br', div:1,    xp:150, cur:300},
+];
+let questDone={};try{questDone=JSON.parse(localStorage.getItem('pg_quests'))||{};}catch(e){}
+function saveQuestDone(){try{localStorage.setItem('pg_quests',JSON.stringify(questDone));}catch(e){}}
+
+const SEASON_MAX=10;
+const SEASON_XP=[0,250,600,1050,1600,2300,3150,4200,5500,7200,9500];
+let seasonXP=0;try{seasonXP=+localStorage.getItem('pg_sxp')||0;}catch(e){}
+function saveSeasonXP(){try{localStorage.setItem('pg_sxp',seasonXP);}catch(e){}}
+function seasonLevel(){let lv=0;for(let i=0;i<SEASON_XP.length;i++)if(seasonXP>=SEASON_XP[i])lv=i;return lv;}
+
+function unlockMopedIfEligible(mid){
+ const list=RIDES[mid];const idx=list.findIndex(v=>v.unlockType==='progress');
+ if(idx<0||isOwned(mid,idx))return;
+ if(stats.dist>=MOPED_REQ.dist&&stats.earned>=MOPED_REQ.earned){
+  owned[mid][idx]=true;saveOwned();
+  popup('🛵 МОПЕД ОТКРЫТ!','hot');blip(920,0.16,'square',0.12);
+ }
+}
+function unlockSeasonRewardIfEligible(mid){
+ const list=RIDES[mid];const idx=list.findIndex(v=>v.unlockType==='season');
+ if(idx<0||isOwned(mid,idx))return;
+ if(seasonLevel()>=SEASON_MAX){
+  owned[mid][idx]=true;saveOwned();
+  popup('🏆 МОТОЦИКЛ СЕЗОННОГО ПРОПУСКА ОТКРЫТ!','hot');blip(1200,0.2,'square',0.14);
+ }
+}
+function checkQuests(){
+ let any=false;
+ QUESTS.forEach(q=>{
+  if(questDone[q.id])return;
+  if(q.get()>=q.target){
+   questDone[q.id]=true;any=true;
+   currency+=q.cur;seasonXP+=q.xp;
+   popup('✅ КВЕСТ: '+q.desc,'hot');
+  }
+ });
+ if(any){saveQuestDone();saveCurrency();saveSeasonXP();}
+}
+/* вызывается по итогам заезда: обновляет статистику, квесты и сезонный пропуск */
+function progressAfterRace(sessionOvertakes,sessionJumps,sessionDrifts,raceDist,raceEarned,raceXp){
+ const prevLevel=seasonLevel();
+ stats.dist+=raceDist;stats.earned+=raceEarned;stats.overtakes+=sessionOvertakes;
+ stats.jumps+=sessionJumps;stats.drifts+=sessionDrifts;stats.races+=1;
+ saveStats();
+ seasonXP+=raceXp;saveSeasonXP();
+ checkQuests();
+ for(const mid in RIDES){unlockMopedIfEligible(mid);unlockSeasonRewardIfEligible(mid);}
+ const newLevel=seasonLevel();
+ if(newLevel>prevLevel){
+  const reward=newLevel*120;currency+=reward;saveCurrency();
+  popup('⭐ УРОВЕНЬ ПРОПУСКА '+newLevel+' · +'+reward+' Br','hot');
+ }
+}
+function refreshSeasonUI(){
+ const lv=seasonLevel();
+ $('#spLvl').textContent=lv;
+ const lo=SEASON_XP[lv]||0,hi=SEASON_XP[Math.min(lv+1,SEASON_MAX)]||lo;
+ const pct=lv>=SEASON_MAX?100:clamp((seasonXP-lo)/Math.max(1,hi-lo)*100,0,100);
+ $('#spBarFill').style.width=pct+'%';
+ $('#spSub').textContent=lv>=SEASON_MAX?'МАКСИМУМ · '+seasonXP+' XP':(seasonXP-lo)+' / '+(hi-lo)+' XP';
+ const ql=$('#questList');ql.innerHTML='';
+ QUESTS.forEach(q=>{
+  const done=!!questDone[q.id];
+  const cur=Math.min(q.get(),q.target);
+  const row=document.createElement('div');row.className='qRow'+(done?' done':'');
+  const shown=q.div>1?(cur/q.div).toFixed(1):cur;
+  const shownT=q.div>1?(q.target/q.div).toFixed(0):q.target;
+  row.innerHTML='<span class="qDot">'+(done?'✓':'')+'</span><span class="qDesc">'+q.desc+'</span>'+
+   '<span class="qBar"><i style="width:'+(cur/q.target*100)+'%"></i></span>'+
+   '<span class="qNum">'+shown+(q.unit?' '+q.unit:'')+' / '+shownT+(q.unit?' '+q.unit:'')+'</span>';
+  ql.appendChild(row);
+ });
+}
 function popup(text,cls){
  if(ui.popups.children.length>6)ui.popups.firstChild.remove();
  const d=document.createElement('div');
@@ -1775,7 +2097,11 @@ function unlock(id){
  ach[id]=1;
  try{localStorage.setItem('pg_ach',JSON.stringify(ach));}catch(e){}
  const a=ACH.find(x=>x[0]===id);
- if(a){toast('🏅 '+a[1],a[2]);blip(784,0.1,'square',0.1);setTimeout(()=>blip(1175,0.14,'square',0.1),110);}
+ if(a){
+  currency+=80;seasonXP+=60;saveCurrency();saveSeasonXP();
+  toast('🏅 '+a[1],a[2]+' · +80 Br');
+  blip(784,0.1,'square',0.1);setTimeout(()=>blip(1175,0.14,'square',0.1),110);
+ }
 }
 function setPips(el,n){el.innerHTML='';for(let i=0;i<5;i++){const p=document.createElement('i');if(i<n)p.className='on';el.appendChild(p);}}
 const scoreMult=()=>1+Math.min(combo,8)*0.125;
@@ -1797,7 +2123,7 @@ function updateHUD(){
  const gn=player.v<1?'N':String(clamp(Math.ceil(player.v/(veh.vmax/5)),1,5));
  ui.gear.innerHTML='ПЕРЕДАЧА <b>'+gn+'</b>';
 }
-function refreshRecLabels(){$('#recA').textContent=record;$('#recB').textContent=record;}
+function refreshRecLabels(){$('#recA').textContent=record;$('#recB').textContent=record;$('#recC').textContent=record;}
 function refreshMeta(){
  const n=Object.keys(ach).length;
  $('#achLine').textContent='🏅 '+n+'/'+ACH.length+' · ЛУЧШИЙ ЗАЕЗД '+bestDist.toFixed(1)+' КМ · РЕКОРД '+record;
@@ -1821,21 +2147,29 @@ function setPreviewVeh(i){
  if(pvCar){pvScene.remove(pvCar);disposeGroup(pvCar);}
  const v=RIDES[mode.id][i];
  if(v.horse)pvCar=buildHorseRig(v.color).g;
+ else if(v.moped)pvCar=buildMopedRig(v.color,{crate:v.unlockType==='progress'}).g;
+ else if(v.model==='offroad4x4'){const mm=buildOffroad4x4(v.color);pvCar=mm.g;}
+ else if(v.model==='snowbuggy'){const mm=buildSnowBuggy(v.color);pvCar=mm.g;}
  else if(v.van)pvCar=buildVan(v.color).g;
- else if(v.shape==='saloon')pvCar=buildSaloon(v.color,{len:v.len}).g;
+ else if(v.shape==='saloon')pvCar=buildSaloon(v.color,{len:v.len,whitewall:v.whitewall}).g;
  else if(v.shape==='hatch')pvCar=buildHatch(v.color,{len:v.len}).g;
  else if(v.shape==='bubble')pvCar=buildBubble(v.color,{len:v.len}).g;
  else pvCar=buildSedan(v.color,{len:v.len,limo:v.limo,hoodOrnament:v.limo}).g;
+ if(v.plow)addSnowPlow(pvCar,v.len?v.len*0.42:1.8,-1.9);
+ if(v.rack)addRoofRack(pvCar,1.8,1.86,1.4);
+ if(v.guard)addGrilleGuard(pvCar,1.8,-2.2);
+ if(v.spot)addRoofSpot(pvCar,0.5,1.42,-0.4);
  pvScene.add(pvCar);
 }
 
 /* ================= state ================= */
 let score=0,overtakes=0,combo=0,comboT=0,dist=0,maxV=0,shake=0,nearCount=0;
+let sessionJumps=0,sessionDrifts=0,airRoofBonus=false;
 let nitro=45,boosting=false,driftCharge=0,driftTime=0,driftCool=0;
 let flameT=0,exT=0,dustT=0,camRoll=0,lastKm=0,airTime=0;
 let duskT=0;
 let speedMarks={100:false,140:false,170:false};
-let countT=0,countIdx=-1,crashT=0,crashShown=false,finalScore=0,newRec=false;
+let countT=0,countIdx=-1,crashT=0,crashShown=false,finalScore=0,newRec=false,earnedCur=0;
 let demoLane=1,demoT=2,skidT=0;
 const keys={};
 const fogA=new THREE.Color(0x9c4a3c),fogB=new THREE.Color(0x241a38),fogC=new THREE.Color();
@@ -1863,11 +2197,15 @@ function applyMode(m){
  dirL.color.setHex(m.dir[0]);dirL.intensity=m.dir[1];
  groundMat.color.setHex(m.ground);roadMat.color.setHex(m.road);
  mtnMat.color.setHex(m.mtn);
- hillMat.color.setHex(m.id==='sunset'?0x2a1830:0x2a3138);
- treeMat.color.setHex(m.id==='sunset'?0x2c3a2c:0x33413a);
+ hillMat.color.setHex(m.id==='sunset'?0x2a1830:(m.id==='winter'?0xc3d0d6:0x2a3138));
+ treeMat.color.setHex(m.id==='sunset'?0x2c3a2c:(m.id==='winter'?0x5c7062:0x33413a));
  clouds.forEach(c=>{c.material.color.setHex(m.id==='sunset'?0xffd9b8:0x9aa4ae);
   c.material.opacity=m.id==='sunset'?c.userData.op:c.userData.op+0.12;});
- rainGroup.visible=(m.id==='rf');
+ rainGroup.visible=!!m.precip;
+ rainPtsMat.color.setHex(m.precip==='snow'?0xffffff:0xa8c8e0);
+ rainPtsMat.size=m.precip==='snow'?0.16:0.09;
+ rainPtsMat.opacity=m.precip==='snow'?0.85:0.55;
+ ramps.forEach(r=>r.mesh.material.color.setHex(m.id==='winter'?0xdfe8ec:0xffffff));
  buildRoad(m);
  $('#nitroLbl').innerHTML=m.id==='rf'?'ШПОРЫ · <b>SHIFT</b>':'НИТРО · <b>SHIFT</b>';
  if(m.id==='sunset'){fogA.setHex(m.fog);applyDusk(duskT);}
@@ -1880,6 +2218,7 @@ function applyMode(m){
 function resetRace(){
  clearTraffic();clearSkids();clearParts();
  score=0;overtakes=0;combo=0;comboT=0;dist=0;maxV=0;shake=0;nearCount=0;
+ sessionJumps=0;sessionDrifts=0;
  nitro=45;boosting=false;driftCharge=0;driftTime=0;driftCool=0;
  lastKm=0;lastGear=0;camRoll=0;airTime=0;duskT=0;hoofT=0;
  timeScale=1;slowT=0;
@@ -1928,7 +2267,7 @@ function toGarage(){
  ramps.forEach(r=>{r.z=player.z-rand(160,420);r.x=pick(mode.lanes);r.used=false;});
  spawnTimer=1;
  $('#garage').style.display='grid';
- refreshRecLabels();refreshMeta();
+ refreshRecLabels();refreshMeta();refreshGarageEconomy();refreshSeasonUI();
 }
 function showCrash(){
  crashShown=true;
@@ -1936,6 +2275,7 @@ function showCrash(){
  $('#cDist').textContent=(dist/1000).toFixed(1);
  $('#cOver').textContent=overtakes;
  $('#cMax').textContent=Math.round(maxV*3.6);
+ $('#cCur').textContent='+'+earnedCur+' '+CUR;
  $('#newRec').style.display=newRec?'block':'none';
  $('#crashOv').classList.add('on');
  if(dist/1000>bestDist){bestDist=+(dist/1000).toFixed(1);saveDist();}
@@ -1959,6 +2299,10 @@ function doCrash(t){
  soundCrash();
  finalScore=Math.floor(score);
  if(finalScore>record){record=finalScore;saveRecord();newRec=true;}else newRec=false;
+ earnedCur=Math.round(finalScore*0.35+dist*0.02);
+ currency+=earnedCur;saveCurrency();
+ const xpGain=Math.round(finalScore*0.5+dist*0.03);
+ progressAfterRace(overtakes,sessionJumps,sessionDrifts,dist,earnedCur,xpGain);
  ui.drift.classList.remove('on');
 }
 function togglePause(){
@@ -2011,16 +2355,18 @@ function checkRamps(){
  if(player.y>0)return;
  for(const r of ramps){
   if(!r.used&&Math.abs(r.z-player.z)<1.5&&Math.abs(r.x-player.x)<1.35&&player.v>12){
-   r.used=true;player.vy=3.1+player.v*0.085;player.jumpOk=player.v>20;
+   r.used=true;player.vy=3.1+player.v*0.085;player.jumpOk=player.v>20;airRoofBonus=false;
    blip(520,0.09,'sine',0.09);
   }}
 }
 function physicsAir(dt,scoring){
  if(player.y>0||player.vy>0){
   player.vy-=14*dt;player.y+=player.vy*dt;airTime+=dt;
+  if(!Number.isFinite(player.y)||!Number.isFinite(player.vy)){player.y=0;player.vy=0;airTime=0;return;}
+  if(player.y>14){player.y=14;player.vy=Math.min(player.vy,0);}
   if(player.y<=0){player.y=0;player.vy=0;
    if(scoring&&airTime>0.15){
-    if(player.jumpOk){score+=60;popup('ПОЛЁТ +60','hot');unlock('air');}
+    if(player.jumpOk){score+=60;popup('ПОЛЁТ +60','hot');unlock('air');sessionJumps++;}
     else popup('ПОЛЁТ');
     shake=Math.max(shake,0.3);blip(300,0.12,'sine',0.12);
     for(let i=0;i<7;i++)spawnPart(player.x+rand(-1,1),0.2,player.z+rand(-1,1.5),rand(-1.5,1.5),rand(0.5,2),rand(-1,2),rand(.5,.9),0x8a848c,rand(.5,.9),'smoke');
@@ -2030,6 +2376,11 @@ function physicsAir(dt,scoring){
  }
 }
 function updateRun(dt){
+ if(!Number.isFinite(player.v)||player.v<0)player.v=0;
+ if(!Number.isFinite(player.x))player.x=0;
+ if(!Number.isFinite(player.y)||player.y<0)player.y=0;
+ if(!Number.isFinite(player.vy))player.vy=0;
+ if(!Number.isFinite(veh.vmax)||veh.vmax<=0){veh.vmax=veh.baseVmax||30;veh.accel=veh.baseAccel||12;veh.steer=veh.baseSteer||7;}
  const up=keys['ArrowUp']||keys['KeyW'],down=keys['ArrowDown']||keys['KeyS'];
  const steer=((keys['ArrowRight']||keys['KeyD'])?1:0)-((keys['ArrowLeft']||keys['KeyA'])?1:0);
  const airborne=player.y>0;
@@ -2044,11 +2395,12 @@ function updateRun(dt){
  player.v=clamp(player.v,0,hardCap);
  driftCool=Math.max(0,driftCool-dt);
  player.drifting=!!keys['Space']&&steer!==0&&player.v>12&&!airborne&&!boosting
-  &&driftCool<=0&&Math.abs(player.latV)>2.5;
+  &&driftCool<=0&&Math.abs(player.latV)>(mode.slippery?1.3:2.5);
  let lat=veh.steer*(0.35+0.65*Math.min(1,player.v/24));
+ if(mode.slippery)lat*=1.3;
  if(player.drifting)lat*=1.55;
  if(airborne)lat*=0.45;
- player.latV+=(steer*lat-player.latV)*Math.min(1,dt*9);
+ player.latV+=(steer*lat-player.latV)*Math.min(1,dt*(mode.slippery?5.5:9));
  player.x+=player.latV*dt;
  const lim=mode.roadHalf-0.85;
  if(player.x>lim){player.x=lim;player.latV*=-0.3;shake=Math.max(shake,0.15);breakCombo();}
@@ -2095,6 +2447,7 @@ function updateRun(dt){
    nitro=clamp(nitro+driftCharge,0,100);
    popup('+'+Math.round(driftCharge)+' '+(mode.id==='rf'?'ШПОР':'НИТРО'));
    if(driftCharge>=35)unlock('drift500');
+   sessionDrifts++;
   }
   driftCharge=0;driftTime=0;ui.drift.classList.remove('on');
  }
@@ -2117,6 +2470,7 @@ function updateRun(dt){
    spawnPart(player.x+0.5*c+2.15*s,0.35,player.z-0.5*s+2.15*c,rand(-.4,.4),0.7,rand(-.4,.4),0.7,0x6a6a72,0.4,'smoke');}}
  checkRamps();
  physicsAir(dt,true);
+ const grounded=player.y<=0;
  spawnTimer-=dt;
  if(spawnTimer<=0){
   spawnWave();
@@ -2140,7 +2494,7 @@ function updateRun(dt){
     p.v=13;p.lane=nearestLane(p.x);chasers.splice(i,1);
     if(chasers.length===0){popup('+200 УШЁЛ ОТ ПОЛИЦИИ','hot');score+=200;unlock('cop');blip(990,0.15,'square',0.12);}
    }}
- }else{
+ }else if(mode.id==='rf'){
   crossTimer-=dt;
   if(crossTimer<=0){spawnCrossHorse();crossTimer=rand(14,26);}
   crossTimer2-=dt;
@@ -2164,7 +2518,11 @@ function updateRun(dt){
   }else if(t.type!=='police'&&t.type!=='cross'&&t.type!=='chicken'&&t.type!=='potato'){
    if(!t.passed&&dz>(t.len/2+2.3)){t.passed=true;onOvertake(t);}
   }
-  if(!airborne&&Math.abs(dz)<(t.len+player.len)/2*0.72&&Math.abs(t.x-player.x)<(t.w+player.wid)/2*0.76){doCrash(t);break;}
+  const closeZ=Math.abs(dz)<(t.len+player.len)/2*0.72,closeX=Math.abs(t.x-player.x)<(t.w+player.wid)/2*0.76;
+  if(grounded&&closeZ&&closeX){doCrash(t);break;}
+  if(!grounded&&closeZ&&closeX&&!airRoofBonus&&(t.type==='truck'||t.type==='bus'||t.type==='crane')){
+   airRoofBonus=true;score+=100;popup('НА КРЫШЕ! +100','hot');shake=Math.max(shake,0.2);blip(700,0.1,'sine',0.1);
+  }
  }
  player.g.position.set(player.x,player.y,player.z);
  player.g.rotation.y=player.yaw;
@@ -2264,11 +2622,11 @@ function updateWorldFollow(dt){
   l.g.position.x=l.g.userData.side*(mode.roadHalf+1.3);
   if(l.g.position.z>player.z+50)l.g.position.z-=960;});
  bbs.forEach(g=>{if(g.position.z>player.z+40){
-  g.position.z-=750;drawBB(g,pick(BB_TEXTS));
+  g.position.z-=750;drawBB(g,pick(bbTexts()));
   g.position.x=-g.position.x;
   g.rotation.y=g.position.x>0?-Math.PI/2:Math.PI/2;}});
  buildings.forEach(g=>{if(g.position.z>player.z+40){
-  g.position.z-=950;drawBuildingBanner(g,pick(BB_TEXTS));}});
+  g.position.z-=950;drawBuildingBanner(g,pick(bbTexts()));}});
  signs.forEach(g=>{if(g.position.z>player.z+30)g.position.z-=960;});
  kmMarkers.forEach(g=>{if(g.position.z>player.z+40){g.position.z-=1000;drawKm(g);}});
  pylons.forEach(g=>{if(g.position.z>player.z+60)g.position.z-=950;});
@@ -2278,8 +2636,10 @@ function updateWorldFollow(dt){
  if(rainGroup.visible){
   rainGroup.position.z=player.z;rainGroup.position.x=player.x*0.5;
   const arr=rainGeo.attributes.position.array;
+  const snow=mode.precip==='snow';const fallMul=snow?0.16:1;
   for(let i=0;i<RAIN_N;i++){
-   arr[i*3+1]-=rainVel[i]*dt;
+   arr[i*3+1]-=rainVel[i]*dt*fallMul;
+   if(snow)arr[i*3]+=Math.sin(tGlobal*0.6+i)*dt*1.1;
    arr[i*3+2]+=player.v*dt*0.85;
    if(arr[i*3+1]<0){arr[i*3+1]=rand(12,17);arr[i*3]=rand(-26,26);arr[i*3+2]=rand(-70,20);}}
   rainGeo.attributes.position.needsUpdate=true;
@@ -2365,6 +2725,31 @@ bindHold('#tpNitro','ShiftLeft');
 if(isTouchDevice)$('#hint').textContent='◀ ▶ руль · ▲ газ · ⤾ дрифт · ⚡ нитро';
 
 $('#btnStart').addEventListener('click',e=>{e.currentTarget.blur();startRace();});
+$('#btnBuy').addEventListener('click',e=>{
+ e.currentTarget.blur();
+ const v=RIDES[mode.id][carIdx];
+ if(v.unlockType||isOwned(mode.id,carIdx)||currency<v.price)return;
+ currency-=v.price;owned[mode.id][carIdx]=true;
+ saveCurrency();saveOwned();
+ refreshGarageEconomy();blip(920,0.1,'square',0.1);
+});
+[0,1,2].forEach(k=>{
+ $('#tuneBtn'+k).addEventListener('click',e=>{
+  e.currentTarget.blur();
+  if(!isOwned(mode.id,carIdx))return;
+  const v=RIDES[mode.id][carIdx];
+  const lv=tuneLv(mode.id,carIdx);
+  if(lv[k]>=TUNE_MAX)return;
+  const price=tunePrice(v.price,lv[k]);
+  if(currency<price)return;
+  currency-=price;lv[k]++;
+  saveCurrency();saveTune();
+  applyTuneToVeh(v,mode.id,carIdx);
+  setPips($('#pSpd'),v.spd);setPips($('#pAcc'),v.acc);setPips($('#pHnd'),v.hnd);
+  $('#carTop').textContent='МАКС. '+Math.round(v.vmax*3.6)+' КМ/Ч'+(v.horse?' (ГАЛОПОМ)':'');
+  refreshGarageEconomy();blip(880,0.08,'square',0.1);
+ });
+});
 $('#carPrev').addEventListener('click',e=>{e.currentTarget.blur();setVeh(carIdx-1);});
 $('#carNext').addEventListener('click',e=>{e.currentTarget.blur();setVeh(carIdx+1);});
 $('#btnRadio').addEventListener('click',e=>{e.currentTarget.blur();cycleStation();});
@@ -2419,6 +2804,7 @@ function setVeh(i){
  const list=RIDES[mode.id];
  carIdx=((i%list.length)+list.length)%list.length;
  const v=list[carIdx];
+ applyTuneToVeh(v,mode.id,carIdx);
  $('#carName').textContent=v.name;
  $('#carIdxEl').textContent=(carIdx+1)+' / '+list.length;
  $('#carTop').textContent='МАКС. '+Math.round(v.vmax*3.6)+' КМ/Ч'+(v.horse?' (ГАЛОПОМ)':'');
@@ -2429,7 +2815,39 @@ function setVeh(i){
  markSwatches();
  setPreviewVeh(carIdx);
  buildPlayerModel();
+ refreshGarageEconomy();
  blip(760,0.06);
+}
+function refreshGarageEconomy(){
+ const list=RIDES[mode.id];const v=list[carIdx];
+ const own=isOwned(mode.id,carIdx);
+ $('#carPanel').classList.toggle('locked',!own);
+ $('#btnStart').style.display=own?'':'none';
+ const bt=$('#buyText'),bb=$('#btnBuy');
+ if(!own&&v.unlockType==='progress'){
+  bb.style.display='none';
+  bt.innerHTML='🔒 Нужно '+(MOPED_REQ.dist/1000)+' км пробега ('+(stats.dist/1000).toFixed(1)+' / '+(MOPED_REQ.dist/1000)+') и '+
+   MOPED_REQ.earned+' Br заработано всего ('+Math.floor(stats.earned)+' / '+MOPED_REQ.earned+')';
+ }else if(!own&&v.unlockType==='season'){
+  bb.style.display='none';
+  bt.innerHTML='🔒 Награда сезонного пропуска — уровень '+SEASON_MAX+' (сейчас '+seasonLevel()+'/'+SEASON_MAX+')';
+ }else if(!own){
+  bb.style.display='';
+  bt.innerHTML='🔒 Не куплено · цена <b id="buyPrice">'+v.price+' '+CUR+'</b>';
+  bb.disabled=currency<v.price;
+ }
+ const lv=tuneLv(mode.id,carIdx);
+ const names=['tSpd','tAcc','tHnd'];
+ names.forEach((id,k)=>{
+  const el=$('#'+id);el.innerHTML='';
+  for(let p=0;p<TUNE_MAX;p++){const i=document.createElement('i');if(p<lv[k])i.className='on';el.appendChild(i);}
+  const price=tunePrice(v.price,lv[k]);
+  const btn=$('#tuneBtn'+k);
+  const maxed=lv[k]>=TUNE_MAX;
+  btn.disabled=!own||maxed||currency<price;
+  btn.innerHTML=maxed?'МАКС':('+1 · '+price+' '+CUR);
+ });
+ refreshCurrencyUI();
 }
 
 /* ================= init ================= */
@@ -2437,7 +2855,7 @@ applyMode(MODES[0]);
 buildPlayerModel();
 setVeh(0);
 snapWorld();
-refreshRecLabels();refreshMeta();
+refreshRecLabels();refreshMeta();refreshGarageEconomy();refreshSeasonUI();
 for(let i=0;i<8;i++)spawnAt(pick(mode.lanes),player.z-60-i*rand(34,60));
 ramps.forEach(r=>{r.z=player.z-rand(160,420);r.x=pick(mode.lanes);r.used=false;});
 requestAnimationFrame(loop);
