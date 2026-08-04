@@ -715,10 +715,10 @@ const megaDashLanes=(()=>{const a=[];for(let i=1;i<=8;i++){a.push(576-64*i);a.pu
 const roadTexMega=roadCanvas(1152,megaDashLanes,576);
 
 const M={
- glass:new THREE.MeshStandardMaterial({color:0x141d2e,roughness:0.12,metalness:0.9}),
+ glass:new THREE.MeshPhysicalMaterial({color:0x141d2e,roughness:0.06,metalness:0.9,clearcoat:1,clearcoatRoughness:0.05}),
  dark:new THREE.MeshStandardMaterial({color:0x181420,roughness:0.9}),
  tire:new THREE.MeshStandardMaterial({color:0x141117,roughness:0.95}),
- hub:new THREE.MeshStandardMaterial({color:0xb9bcc4,roughness:0.35,metalness:0.8}),
+ hub:new THREE.MeshPhysicalMaterial({color:0xb9bcc4,roughness:0.2,metalness:0.9,clearcoat:0.6,clearcoatRoughness:0.1}),
  head:new THREE.MeshStandardMaterial({color:0xfff2cf,emissive:0xffdf9a,emissiveIntensity:1.5}),
  tail:new THREE.MeshStandardMaterial({color:0x5a0f0a,emissive:0xff2a18,emissiveIntensity:1.1}),
  wood:new THREE.MeshStandardMaterial({color:0x8a6a42,roughness:1}),
@@ -738,7 +738,13 @@ const M={
  lightPole:new THREE.MeshLambertMaterial({color:0x5a6068}),
 };
 const bodyCache={};
-function bodyMat(hex){if(!bodyCache[hex])bodyCache[hex]=new THREE.MeshStandardMaterial({color:hex,roughness:0.32,metalness:0.4});return bodyCache[hex];}
+/* лакированная автомобильная краска: базовый слой металлик + прозрачный лаковый слой поверх — так у машины
+   появляется настоящая «глубина» покраски и более резкие блики, а не плоский пластик */
+function bodyMat(hex){
+ if(!bodyCache[hex])bodyCache[hex]=new THREE.MeshPhysicalMaterial({
+  color:hex,roughness:0.3,metalness:0.4,clearcoat:0.7,clearcoatRoughness:0.15});
+ return bodyCache[hex];
+}
 
 /* ================= geometry: merge pipeline ================= */
 function roundedBoxGeo(w,h,d,r){
@@ -809,6 +815,19 @@ function makeWheel(r,tw,whitewall){
  brake.rotation.z=Math.PI/2;spin.add(brake);
  return spin;
 }
+/* набор мелких деталей для дополнительной детализации кузова: зеркала, патрубки выхлопа, антенна */
+function addMirrors(parts,halfW,y,z,mat){
+ [-1,1].forEach(sd=>{
+  P(parts,new THREE.BoxGeometry(0.14,0.03,0.03),mat,sd*(halfW+0.06),y,z);
+  P(parts,roundedBoxGeo(0.045,0.09,0.13,0.02),mat,sd*(halfW+0.14),y,z);
+ });
+}
+function addExhaustTips(parts,pairs,y,z,mat){
+ pairs.forEach(x=>P(parts,new THREE.CylinderGeometry(0.045,0.05,0.16,10),mat,x,y,z,Math.PI/2,0,0));
+}
+function addAntenna(parts,x,y,z,mat){
+ P(parts,new THREE.CylinderGeometry(0.008,0.012,0.36,6),mat,x,y,z);
+}
 function makeWoodWheel(){
  const spin=new THREE.Group();const lp=[];
  P(lp,new THREE.CylinderGeometry(0.55,0.55,0.16,16),M.woodDark,0,0,0,0,0,Math.PI/2);
@@ -842,8 +861,6 @@ function buildSedan(colorHex,opts={}){
  /* колёсные арки */
  [[-1.42*k,-tk],[-1.42*k,tk],[1.42*k,-tk],[1.42*k,tk]].forEach(([z,x])=>
   P(parts,new THREE.TorusGeometry(0.4,0.07,8,16,Math.PI),cm,x,0.39,z,0,Math.PI/2,0));
- /* хромированная линия по борту — на уровне ручек дверей */
- [-(W/2+0.005),(W/2+0.005)].forEach(x=>P(parts,new THREE.BoxGeometry(0.012,0.03,L-1.15),M.hub,x,0.68,0));
  [-(tk*1.024),(tk*1.024)].forEach(x=>P(parts,new THREE.BoxGeometry(0.05,0.5,0.07),cm,x,1.32,-0.1*k));
  P(parts,roundedBoxGeo(W+0.08,0.22,0.18,0.06),M.bumper,0,0.34,-L/2-0.04);
  P(parts,roundedBoxGeo(W+0.08,0.22,0.18,0.06),M.bumper,0,0.34,L/2+0.04);
@@ -903,7 +920,6 @@ function buildSedan(colorHex,opts={}){
  [-1,1].forEach(sd=>{
   P(parts,new THREE.BoxGeometry(0.16,0.03,0.03),M.dark,sd*(tk*1.155),1.28,-0.55*k);
   P(parts,roundedBoxGeo(0.05,0.1,0.14,0.02),M.dark,sd*(tk*1.25),1.28,-0.55*k);});
- [-0.35,0.75].forEach(z=>[-tk*1.071,tk*1.071].forEach(x=>P(parts,new THREE.BoxGeometry(0.015,0.5,0.02),M.dark,x,0.72,z*k)));
  [-0.6,0.35].forEach(z=>[-(W/2+0.01),(W/2+0.01)].forEach(x=>P(parts,new THREE.BoxGeometry(0.02,0.035,0.15),M.hub,x,0.78,z*k)));
  if(!opts.len)P(parts,new THREE.CylinderGeometry(0.008,0.008,0.5,4),M.dark,0.6,1.92,0.6,0,0,-0.15);
  mergeInto(tilt,parts,true);
@@ -913,6 +929,10 @@ function buildSedan(colorHex,opts={}){
  c.quadraticCurveTo(-0.98*k,0.58,-1.1*k,0.44);c.lineTo(-1.32*k,0);
  const cabGeo=new THREE.ExtrudeGeometry(c,{depth:W-0.42,bevelEnabled:true,bevelThickness:0.07,bevelSize:0.07,bevelSegments:4,curveSegments:12});
  cabGeo.translate(0,0,-(W-0.42)/2);cabGeo.rotateY(Math.PI/2);
+ /* хромовая окантовка стекла — та же форма, что и кабина, чуть увеличена по высоте/длине —
+    торчит тонким ободком по контуру стекла вместо прямых полосок "на глаз" */
+ const trim=new THREE.Mesh(cabGeo.clone(),M.hub);
+ trim.scale.set(1,1.045,1.025);trim.position.set(0,1.06,0);trim.castShadow=true;tilt.add(trim);
  const cab=new THREE.Mesh(cabGeo,M.glass);cab.position.set(0,1.06,0);cab.castShadow=true;tilt.add(cab);
  if(opts.headCone){addBeam(g,-0.58*wf,-(L/2+3.3));addBeam(g,0.58*wf,-(L/2+3.3));}
  const wheels=[],steers=[],wr=opts.wheelR||0.336;
@@ -1105,6 +1125,9 @@ function buildOffroad4x4(colorHex){
  const tailMat=M.tail.clone();tailMat.userData.unique=true;
  [-0.55,0.55].forEach(x=>P(parts,roundedBoxGeo(0.18,0.26,0.06,0.025),tailMat,x,0.86,L/2+0.02));
  P(parts,roundedBoxGeo(0.7,0.24,0.06,0.03),M.dark,0,0.5,-L/2+0.015);
+ addMirrors(parts,W/2,1.28,-0.55,M.dark);
+ addExhaustTips(parts,[0.5],0.3,L/2+0.1,M.hub);
+ addAntenna(parts,0.6,1.6,0.4,M.dark);
  mergeInto(tilt,parts,true);
  const spare=makeWheel(0.36,0.14);spare.rotation.z=Math.PI/2;spare.position.set(0,0.86,L/2+0.17);tilt.add(spare);
  addRoofRack(tilt,W,1.63,L*0.28);
@@ -1127,7 +1150,10 @@ function buildSnowBuggy(colorHex){
  P(parts,roundedBoxGeo(0.16,0.09,0.05,0.02),M.head,-0.48,0.4,-L/2+0.02);
  P(parts,roundedBoxGeo(0.16,0.09,0.05,0.02),M.head,0.48,0.4,-L/2+0.02);
  P(parts,roundedBoxGeo(0.15,0.08,0.05,0.02),tailMat,0,0.4,L/2-0.02);
+ addExhaustTips(parts,[0.24],0.42,L/2-0.2,M.hub);
  mergeInto(tilt,parts,true);
+ const antenna=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.015,0.7,6),M.dark);
+ antenna.position.set(-0.5,0.9,0.3);tilt.add(antenna);
  const cageMat=M.dark;
  [-0.6,0.6].forEach(x=>{
   const arc=new THREE.Mesh(new THREE.TorusGeometry(0.46,0.032,6,12,Math.PI),cageMat);
@@ -1169,17 +1195,20 @@ function buildOpenWheeler(colorHex){
  P(parts,new THREE.SphereGeometry(0.26,10,8,0,Math.PI*2,0,Math.PI/2),bodyMat(0x161018),0,0.68,-0.05);
  [-0.68,0.68].forEach(x=>P(parts,roundedBoxGeo(0.46,0.32,1.3,0.08),cm,x,0.44,0.2));
  P(parts,roundedBoxGeo(0.66,0.38,1.0,0.08),cm,0,0.48,1.2);
+ addMirrors(parts,0.5,0.62,-0.35,M.dark);
  mergeInto(tilt,parts,true);
  const wingP=[];
  P(wingP,new THREE.BoxGeometry(1.1,0.05,0.34),M.dark,0,0.96,L/2-0.1);
  [-0.4,0.4].forEach(x=>P(wingP,new THREE.BoxGeometry(0.05,0.4,0.05),M.dark,x,0.76,L/2));
  P(wingP,new THREE.BoxGeometry(1.3,0.04,0.3),M.dark,0,0.2,-L/2+0.15);
+ const tailMat=M.tail.clone();tailMat.userData.unique=true;
+ P(wingP,roundedBoxGeo(0.16,0.08,0.05,0.02),tailMat,0,0.62,L/2-0.32);
+ P(wingP,new THREE.CylinderGeometry(0.05,0.06,0.18,10),M.dark,0,0.5,L/2-0.32,Math.PI/2,0,0);
  mergeInto(tilt,wingP,true);
  const wheels=[],steers=[],wr=0.36;
  [[-1.5,-0.85,1],[-1.5,0.85,1],[1.4,-0.85,0],[1.4,0.85,0]].forEach(([z,x,f])=>{
   if(f){const st=new THREE.Group();st.position.set(x,wr,z);st.add(makeWheel(wr,0.22));g.add(st);wheels.push(st.children[0]);steers.push(st);}
   else{const w=makeWheel(wr,0.26);w.position.set(x,wr,z);g.add(w);wheels.push(w);}});
- const tailMat=M.tail.clone();tailMat.userData.unique=true;
  return {g,tilt,wheels,steers,len:L+0.3,w:W+0.35,tailMat};
 }
 /* ГИПЕРКАР — низкий клиновидный суперкар: застеклённый купол, диффузор, антикрыло */
@@ -1204,6 +1233,8 @@ function buildHypercar(colorHex){
  const tailMat=M.tail.clone();tailMat.userData.unique=true;
  P(parts,roundedBoxGeo(W-0.3,0.1,0.08,0.03),tailMat,0,0.44,L/2-0.02);
  [-0.5,0.5].forEach(x=>P(parts,roundedBoxGeo(0.24,0.1,0.07,0.03),M.head,x,0.34,-L/2+0.02));
+ addMirrors(parts,W/2-0.1,0.66,-0.65,M.dark);
+ addExhaustTips(parts,[-0.35,0.35],0.32,L/2-0.02,M.hub);
  mergeInto(tilt,parts,true);
  const wp=[];
  P(wp,new THREE.BoxGeometry(W-0.3,0.04,0.3),M.dark,0,0.86,L/2-0.35);
@@ -1229,13 +1260,14 @@ function buildMuscle(colorHex){
  P(parts,roundedBoxGeo(W-0.2,0.16,0.06,0.02),tailMat,0,0.62,L/2-0.02);
  [-0.55,0.55].forEach(x=>P(parts,new THREE.CylinderGeometry(0.13,0.13,0.08,14),M.head,x,0.6,-L/2+0.02,Math.PI/2,0,0));
  P(parts,roundedBoxGeo(0.8,0.22,0.06,0.03),M.dark,0,0.55,-L/2+0.015);
+ addMirrors(parts,W/2,1.02,-0.7,M.dark);
+ addExhaustTips(parts,[-0.6,0.6],0.24,L/2-0.02,M.hub);
  mergeInto(tilt,parts,true);
  const wheels=[],steers=[],wr=0.42;
  [[-1.5,-0.92,1],[-1.5,0.92,1],[1.5,-0.92,0],[1.5,0.92,0]].forEach(([z,x,f])=>{
   if(f){const st=new THREE.Group();st.position.set(x,wr*1.1,z);st.add(makeWheel(wr,0.22));g.add(st);wheels.push(st.children[0]);steers.push(st);}
   else{const w=makeWheel(wr,0.24);w.position.set(x,wr*1.1,z);g.add(w);wheels.push(w);}});
- const tailMat2=M.tail.clone();tailMat2.userData.unique=true;
- return {g,tilt,wheels,steers,len:L+0.2,w:W+0.06,tailMat:tailMat2};
+ return {g,tilt,wheels,steers,len:L+0.2,w:W+0.06,tailMat};
 }
 /* лёгкая двухколёсная модель для ИГРОКА (мопед / мотоцикл сезонного пропуска) — со своей tilt-группой и рулевым узлом */
 function buildMopedRig(colorHex,opts={}){
