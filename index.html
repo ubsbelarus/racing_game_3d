@@ -65,6 +65,15 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .nitroWrap.low #nitrofill{background:linear-gradient(90deg,#6a4034,#96604a);box-shadow:none}
 .nitroWrap.boost #nitrofill{animation:nitroFlk .12s infinite alternate}
 @keyframes nitroFlk{from{filter:brightness(1)}to{filter:brightness(1.9)}}
+.headWrap{margin-top:10px;opacity:0;max-height:0;overflow:hidden;transition:opacity .3s}
+.headWrap.on{opacity:1;max-height:40px}
+.headLbl{font-size:10px;letter-spacing:.24em;color:var(--dim);font-weight:700;text-transform:uppercase}
+.headLbl b{color:#ffe28a}
+#headbar{width:200px;height:10px;margin-top:4px;background:rgba(255,255,255,.12);overflow:hidden;
+  clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+#headfill{height:100%;transform-origin:left;background:linear-gradient(90deg,#ffb144,#fff2c8);transform:scaleX(0);
+  box-shadow:0 0 14px rgba(255,200,120,.7)}
+.headWrap.full #headfill{animation:nitroFlk .12s infinite alternate}
 #onWarn{position:absolute;top:74px;left:50%;transform:translateX(-50%) skewX(-8deg);
   font-family:var(--disp);font-weight:800;font-size:15px;color:#ffd9a4;background:rgba(120,20,20,.6);
   border:1px solid rgba(255,120,80,.6);padding:6px 20px;opacity:0;transition:opacity .2s;letter-spacing:.12em}
@@ -333,6 +342,10 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
       <div class="nitroLbl" id="nitroLbl">НИТРО · <b>SHIFT</b></div>
       <div id="nitrobar"><div id="nitrofill"></div></div>
     </div>
+    <div class="headWrap" id="headWrap">
+      <div class="headLbl">ЭНЕРГИЯ ФАР · <b>БЛИЖНИЙ СВЕТ</b></div>
+      <div id="headbar"><div id="headfill"></div></div>
+    </div>
   </div>
   <div class="hud-br">
     <div id="speed">0</div>
@@ -411,8 +424,8 @@ kbd{font-family:var(--disp);font-size:10px;background:#241028;border:1px solid v
     </div>
     <div class="seasonPanel" id="seasonPanel">
       <div class="seasonHead">
-        <span class="seasonTag">🏁 СЕЗОННЫЙ ПРОПУСК</span>
-        <span class="seasonLvl">УРОВЕНЬ <b id="spLvl">0</b>/10</span>
+        <span class="seasonTag">🏁 СЕЗОННЫЙ ПРОПУСК · 2 СЕЗОНА</span>
+        <span class="seasonLvl">УРОВЕНЬ <b id="spLvl">0</b>/20</span>
       </div>
       <div id="spBar"><div id="spBarFill"></div></div>
       <div class="spSub" id="spSub">0 / 250 XP</div>
@@ -525,6 +538,8 @@ const RIDES={
   {name:'ЧАЙКА',     color:0x23232b, vmax:49, accel:9.5,  steer:5.6, spd:5,acc:2,hnd:2, len:6.3, limo:true, price:4200},
   {name:'МОПЕД',     color:0xffb144, vmax:24, accel:19,   steer:11.5, spd:2,acc:5,hnd:5, moped:true, unlockType:'progress', price:0},
   {name:'МОТОЦИКЛ ПРОПУСКА', color:0x2ab8a8, vmax:53, accel:22, steer:11, spd:5,acc:5,hnd:5, moped:true, unlockType:'season', price:0},
+  {name:'КВАДРОЦИКЛ',   color:0x4a7c3a, vmax:41, accel:19, steer:12.5, spd:4,acc:4,hnd:5, model:'quad', unlockType:'quad', price:0},
+  {name:'ЭЛЕКТРОКАР 2 СЕЗОНА', color:0xe8f4ff, vmax:60, accel:23, steer:11.5, spd:5,acc:5,hnd:5, model:'hypercar', unlockType:'season2', price:0},
  ],
  rf:[
   {name:'ГНЕДОЙ',    color:0x8a5a34, vmax:30, accel:14,   steer:9.0, spd:3,acc:4,hnd:4, horse:true, price:0},
@@ -611,6 +626,11 @@ const ACH=[
  ['km3','ДАЛЬНОБОЙ','3 км за заезд'],
  ['near10','ЮВЕЛИР','10 обгонов впритык за заезд'],
  ['night','НОЧНОЙ ЕЗДОК','встретить звёзды на трассе'],
+ ['headlights','ЯРКИЙ СВЕТ','накопить полную энергию фар ночью'],
+ ['event','ЛОВЕЦ УДАЧИ','поймать редкое событие на трассе'],
+ ['quad','ВСЕДОРОЖНИК','открыть квадроцикл'],
+ ['bigpotato','КОРОЛЬ КАРТОФЕЛЯ','объехать гигантскую картофелину'],
+ ['season2','ПОД НАПРЯЖЕНИЕМ','открыть электрокар 2 сезона'],
 ];
 let ach={};try{ach=JSON.parse(localStorage.getItem('pg_ach'))||{};}catch(e){}
 const STATIONS=[
@@ -1480,10 +1500,12 @@ function buildPotato(){
 function spawnPotato(){
  const lane=pick(mode.lanes);
  const m=buildPotato();
+ const giant=Math.random()<0.12;
+ if(giant){m.g.scale.set(3.4,3.4,3.4);m.len*=3.4;m.w*=3.4;}
  const z=player.z-rand(150,230);
  m.g.position.set(lane,0,z);m.g.rotation.y=rand(0,Math.PI*2);scene.add(m.g);
- traffic.push({m,type:'potato',lane,x:lane,z,v:0,len:m.len,w:m.w,wr:0.01,passed:false,t:rand(0,9),ws:0,vx:0});
- popup('🥔 КАРТОШКА НА ДОРОГЕ!','hot');
+ traffic.push({m,type:'potato',lane,x:lane,z,v:0,len:m.len,w:m.w,wr:0.01,passed:false,t:rand(0,9),ws:0,vx:0,giant});
+ popup(giant?'🥔 ГИГАНТСКАЯ КАРТОШКА!':'🥔 КАРТОШКА НА ДОРОГЕ!','hot');
 }
 function makeRamp(){
  const s=new THREE.Shape();
@@ -2069,7 +2091,7 @@ function buildPlayerModel(){
  if(veh.horse)m=buildHorseRig(veh.color);
  else if(veh.moped)m=buildMopedRig(veh.color,{crate:veh.unlockType==='progress'});
  else if(veh.model==='offroad4x4')m=buildOffroad4x4(veh.color);
- else if(veh.model==='snowbuggy')m=buildSnowBuggy(veh.color);
+ else if(veh.model==='snowbuggy'||veh.model==='quad')m=buildSnowBuggy(veh.color);
  else if(veh.model==='openwheeler')m=buildOpenWheeler(veh.color);
  else if(veh.model==='hypercar')m=buildHypercar(veh.color);
  else if(veh.model==='muscle')m=buildMuscle(veh.color);
@@ -2221,6 +2243,7 @@ const ui={
  fill:$('#speedfill'),combo:$('#combo'),drift:$('#driftBox'),hint:$('#hint'),
  recChip:$('#recChip'),popups:$('#popups'),onWarn:$('#onWarn'),gear:$('#gearEl'),
  nitroFill:$('#nitrofill'),nitroWrap:$('#nitroWrap'),speedlines:$('#speedlines'),
+ headFill:$('#headfill'),headWrap:$('#headWrap'),
 };
 let record=0;try{record=+localStorage.getItem('pg_record')||0;}catch(e){}
 let bestDist=0;try{bestDist=+localStorage.getItem('pg_dist')||0;}catch(e){}
@@ -2287,6 +2310,7 @@ try{const sv=JSON.parse(localStorage.getItem('pg_stats'));if(sv)stats=Object.ass
 function saveStats(){try{localStorage.setItem('pg_stats',JSON.stringify(stats));}catch(e){}}
 
 const MOPED_REQ={dist:10000,earned:200000};
+const QUAD_REQ={runDist:25000,earned:300000};
 const QUESTS=[
  {id:'q_dist10',   desc:'Проехать 10 км суммарно',        get:()=>stats.dist,      target:10000, unit:'км', div:1000, xp:150, cur:300},
  {id:'q_over50',   desc:'50 обгонов суммарно',             get:()=>stats.overtakes, target:50,    unit:'',   div:1,    xp:150, cur:240},
@@ -2298,8 +2322,10 @@ const QUESTS=[
 let questDone={};try{questDone=JSON.parse(localStorage.getItem('pg_quests'))||{};}catch(e){}
 function saveQuestDone(){try{localStorage.setItem('pg_quests',JSON.stringify(questDone));}catch(e){}}
 
-const SEASON_MAX=10;
-const SEASON_XP=[0,250,600,1050,1600,2300,3150,4200,5500,7200,9500];
+const SEASON1_MAX=10;
+const SEASON_MAX=20;
+const SEASON_XP=[0,250,600,1050,1600,2300,3150,4200,5500,7200,9500,
+ 12300,15700,19800,24700,30500,37300,45200,54300,64700,76500];
 let seasonXP=0;try{seasonXP=+localStorage.getItem('pg_sxp')||0;}catch(e){}
 function saveSeasonXP(){try{localStorage.setItem('pg_sxp',seasonXP);}catch(e){}}
 function seasonLevel(){let lv=0;for(let i=0;i<SEASON_XP.length;i++)if(seasonXP>=SEASON_XP[i])lv=i;return lv;}
@@ -2315,9 +2341,25 @@ function unlockMopedIfEligible(mid){
 function unlockSeasonRewardIfEligible(mid){
  const list=RIDES[mid];const idx=list.findIndex(v=>v.unlockType==='season');
  if(idx<0||isOwned(mid,idx))return;
- if(seasonLevel()>=SEASON_MAX){
+ if(seasonLevel()>=SEASON1_MAX){
   owned[vehKey(mid,idx)]=true;saveOwned();
   popup('🏆 МОТОЦИКЛ СЕЗОННОГО ПРОПУСКА ОТКРЫТ!','hot');blip(1200,0.2,'square',0.14);
+ }
+}
+function unlockQuadIfEligible(mid,raceDist){
+ const list=RIDES[mid];const idx=list.findIndex(v=>v.unlockType==='quad');
+ if(idx<0||isOwned(mid,idx))return;
+ if(raceDist>=QUAD_REQ.runDist&&stats.earned>=QUAD_REQ.earned){
+  owned[vehKey(mid,idx)]=true;saveOwned();
+  popup('🏎️ КВАДРОЦИКЛ ОТКРЫТ!','hot');blip(1040,0.18,'square',0.13);unlock('quad');
+ }
+}
+function unlockSeason2IfEligible(mid){
+ const list=RIDES[mid];const idx=list.findIndex(v=>v.unlockType==='season2');
+ if(idx<0||isOwned(mid,idx))return;
+ if(seasonLevel()>=SEASON_MAX){
+  owned[vehKey(mid,idx)]=true;saveOwned();
+  popup('⚡ ЭЛЕКТРОКАР 2 СЕЗОНА ОТКРЫТ!','hot');blip(1400,0.22,'square',0.15);unlock('season2');
  }
 }
 function checkQuests(){
@@ -2340,7 +2382,7 @@ function progressAfterRace(sessionOvertakes,sessionJumps,sessionDrifts,raceDist,
  saveStats();
  seasonXP+=raceXp;saveSeasonXP();
  checkQuests();
- for(const mid in RIDES){unlockMopedIfEligible(mid);unlockSeasonRewardIfEligible(mid);}
+ for(const mid in RIDES){unlockMopedIfEligible(mid);unlockSeasonRewardIfEligible(mid);unlockQuadIfEligible(mid,raceDist);unlockSeason2IfEligible(mid);}
  const newLevel=seasonLevel();
  if(newLevel>prevLevel){
   const reward=newLevel*80;currency+=reward;saveCurrency();
@@ -2408,6 +2450,12 @@ function updateHUD(){
  ui.nitroFill.style.transform='scaleX('+(nitro/100).toFixed(3)+')';
  ui.nitroWrap.classList.toggle('low',nitro<15);
  ui.nitroWrap.classList.toggle('boost',boosting);
+ const showHead=mode.id==='sunset'&&duskT>=1;
+ ui.headWrap.classList.toggle('on',showHead);
+ if(showHead){
+  ui.headFill.style.transform='scaleX('+(headlightEnergy/100).toFixed(3)+')';
+  ui.headWrap.classList.toggle('full',headlightEnergy>=95||headBoostT>0);
+ }
  const sl=clamp((player.v/veh.vmax-0.72)*2.2,0,0.8)+(boosting?0.3:0);
  ui.speedlines.style.opacity=(state===ST.RUN?clamp(sl,0,1):0);
  ui.onWarn.classList.toggle('on',state===ST.RUN&&mode.oncoming.length>0&&player.x<oncomingBoundary());
@@ -2454,7 +2502,7 @@ function setPreviewVeh(i){
  if(v.horse)pvCar=buildHorseRig(v.color).g;
  else if(v.moped)pvCar=buildMopedRig(v.color,{crate:v.unlockType==='progress'}).g;
  else if(v.model==='offroad4x4'){const mm=buildOffroad4x4(v.color);pvCar=mm.g;}
- else if(v.model==='snowbuggy'){const mm=buildSnowBuggy(v.color);pvCar=mm.g;}
+ else if(v.model==='snowbuggy'||v.model==='quad'){const mm=buildSnowBuggy(v.color);pvCar=mm.g;}
  else if(v.model==='openwheeler'){const mm=buildOpenWheeler(v.color);pvCar=mm.g;}
  else if(v.model==='hypercar'){const mm=buildHypercar(v.color);pvCar=mm.g;}
  else if(v.model==='muscle'){const mm=buildMuscle(v.color);pvCar=mm.g;}
@@ -2475,6 +2523,8 @@ let score=0,overtakes=0,combo=0,comboT=0,dist=0,maxV=0,shake=0,nearCount=0;
 let sessionJumps=0,sessionDrifts=0,airRoofBonus=false;
 let overSpeedT=0,chaosLvl=0,radarWarned=false;
 let nitro=45,boosting=false,driftCharge=0,driftTime=0,driftCool=0;
+let headlightEnergy=0,headBoostT=0;
+let eventTimer=rand(40,70),eventType=null,eventT=0,eventMult=1;
 let flameT=0,exT=0,dustT=0,camRoll=0,lastKm=0,airTime=0;
 let duskT=0;
 let speedMarks={100:false,140:false,170:false};
@@ -2530,6 +2580,7 @@ function resetRace(){
  sessionJumps=0;sessionDrifts=0;
  overSpeedT=0;chaosLvl=0;radarWarned=false;
  nitro=45;boosting=false;driftCharge=0;driftTime=0;driftCool=0;
+ headlightEnergy=0;headBoostT=0;eventTimer=rand(40,70);eventType=null;eventT=0;eventMult=1;
  lastKm=0;lastGear=0;camRoll=0;airTime=0;duskT=0;hoofT=0;
  timeScale=1;slowT=0;
  speedMarks={100:false,140:false,170:false};
@@ -2566,6 +2617,7 @@ function toGarage(){
  $('#hud').classList.remove('on');
  ui.speedlines.style.opacity=0;ui.onWarn.classList.remove('on');
  boosting=false;nitro=40;duskT=0;driftCharge=0;driftTime=0;driftCool=0;
+ headlightEnergy=0;headBoostT=0;eventType=null;eventT=0;eventMult=1;ui.headWrap.classList.remove('on','full');
  timeScale=1;slowT=0;
  player.y=0;player.vy=0;player.yaw=0;player.latV=0;player.spin=0;player.v=22;
  player.z=0;
@@ -2657,6 +2709,13 @@ function onOvertake(t){
    if(nearCount>=10)unlock('near10');
    popup('ВПРИТЫК! +85','hot');shake=Math.max(shake,0.22);blip(1250,0.09,'square',0.12);
    if(mode.id==='sunset'&&t.type!=='moto'&&Math.random()<0.6)horn();
+   if(mode.id==='sunset'&&duskT>=1&&headBoostT<=0){
+    headlightEnergy=Math.min(100,headlightEnergy+14);
+    if(headlightEnergy>=100){
+     headlightEnergy=0;headBoostT=4;score+=120;
+     popup('ФАРЫ НАКОПИЛИ ЭНЕРГИЮ! +120','hot');unlock('headlights');blip(1500,0.14,'square',0.13);
+    }
+   }
   }else{
    score+=15;popup('впритык… +15');
   }
@@ -2734,9 +2793,10 @@ function updateRun(dt){
  }
  player.z-=player.v*dt;
  dist+=player.v*dt;maxV=Math.max(maxV,player.v);
- score+=player.v*dt*0.6*scoreMult();
+ score+=player.v*dt*0.6*scoreMult()*eventMult;
+ if(headBoostT>0){headBoostT=Math.max(0,headBoostT-dt);}
  duskT=Math.min(1,duskT+dt/150);
- if(mode.id==='sunset'){applyDusk(duskT);if(duskT>=1)unlock('night');}
+ if(mode.id==='sunset'){applyDusk(duskT);if(duskT>=1)unlock('night');if(headBoostT>0)M.beam.opacity=0.5;}
  const kmh=player.v*3.6;
  const speedLimit=veh.horse?55:100;
  if(kmh>speedLimit){
@@ -2806,6 +2866,25 @@ function updateRun(dt){
  }
  potatoTimer-=dt;
  if(potatoTimer<=0&&mode.id!=='mega'){spawnPotato();potatoTimer=rand(32,58);}
+ if(eventT>0){
+  eventT-=dt;
+  if(eventT<=0){eventType=null;eventMult=1;}
+ }else{
+  eventTimer-=dt;
+  if(eventTimer<=0){
+   eventTimer=rand(45,80);
+   eventType=Math.random()<0.5?'coins2x':'boost';
+   unlock('event');
+   if(eventType==='coins2x'){
+    eventT=12;eventMult=2;
+    popup('🍀 РЕДКОЕ СОБЫТИЕ: x2 МОНЕТЫ НА 12 СЕК!','hot');toast('🍀 РЕДКОЕ СОБЫТИЕ','x2 монеты на 12 секунд');
+   }else{
+    eventT=6;nitro=100;
+    popup('🍀 РЕДКОЕ СОБЫТИЕ: НИТРО ПОЛНОСТЬЮ ЗАРЯЖЕНО!','hot');toast('🍀 РЕДКОЕ СОБЫТИЕ','нитро заряжено под завязку');
+   }
+   blip(1600,0.18,'square',0.14);
+  }
+ }
  if(mode.oncoming.length){
   oncomingTimer-=dt;
   if(oncomingTimer<=0){spawnOncoming();oncomingTimer=mode.id==='mega'?rand(1.4,2.4):rand(1.1,2.2);}
@@ -2854,7 +2933,12 @@ function updateRun(dt){
     }
     t.passed=true;
    }
-  }else if(t.type!=='police'&&t.type!=='cross'&&t.type!=='chicken'&&t.type!=='potato'&&t.type!=='barrier'){
+  }else if(t.type==='potato'){
+   if(t.giant&&!t.passed&&dz>(t.len/2+2.3)){
+    t.passed=true;score+=300;popup('ГИГАНТСКАЯ КАРТОШКА ОБЪЕХАНА! +300','hot');
+    unlock('bigpotato');blip(1100,0.16,'square',0.13);
+   }
+  }else if(t.type!=='police'&&t.type!=='cross'&&t.type!=='chicken'&&t.type!=='barrier'){
    if(!t.passed&&dz>(t.len/2+2.3)){t.passed=true;onOvertake(t);}
   }
   const closeZ=Math.abs(dz)<(t.len+player.len)/2*0.72,closeX=Math.abs(t.x-player.x)<(t.w+player.wid)/2*0.76;
@@ -3184,7 +3268,16 @@ function refreshGarageEconomy(){
    (eOk?'✅ ':'⬜ ')+'заработано '+Math.floor(stats.earned)+' / '+MOPED_REQ.earned+' <b>'+CUR+'</b>';
  }else if(!own&&v.unlockType==='season'){
   bb.style.display='none';
-  bt.innerHTML='🏆 Награда сезонного пропуска:<br>уровень <b>'+seasonLevel()+' / '+SEASON_MAX+'</b> — играй заезды, чтобы качать пропуск';
+  bt.innerHTML='🏆 Награда сезонного пропуска:<br>уровень <b>'+seasonLevel()+' / '+SEASON1_MAX+'</b> — играй заезды, чтобы качать пропуск';
+ }else if(!own&&v.unlockType==='quad'){
+  bb.style.display='none';
+  const eOk=stats.earned>=QUAD_REQ.earned;
+  bt.innerHTML='🏎️ Открывается за один заезд + прогресс:<br>'+
+   '⬜ проехать <b>'+(QUAD_REQ.runDist/1000)+' км за один заезд</b> без аварии<br>'+
+   (eOk?'✅ ':'⬜ ')+'заработано '+Math.floor(stats.earned)+' / '+QUAD_REQ.earned+' <b>'+CUR+'</b>';
+ }else if(!own&&v.unlockType==='season2'){
+  bb.style.display='none';
+  bt.innerHTML='⚡ Награда 2 сезона пропуска:<br>уровень <b>'+seasonLevel()+' / '+SEASON_MAX+'</b> — качай пропуск после 1 сезона';
  }else if(!own){
   bb.style.display='';
   bt.innerHTML='🔒 Машина закрыта · цена <b id="buyPrice">'+v.price+' '+CUR+'</b>';
